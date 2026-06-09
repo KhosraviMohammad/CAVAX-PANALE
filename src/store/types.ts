@@ -1,5 +1,4 @@
 import { ACTION_PREFIXES, DEFAULT_VALUES } from './constants';
-import { RiskLevel } from './constants';
 // Action Types
 export const SET_USER = `${ACTION_PREFIXES.APP}/setUser`;
 export const SET_TOKEN = `${ACTION_PREFIXES.APP}/setToken`;
@@ -50,90 +49,9 @@ export type Direction = (typeof DIRECTIONS)[keyof typeof DIRECTIONS];
 // User Type
 export const USER_INITIAL_STATE = DEFAULT_VALUES.USER;
 
-// Auth Type
-export const AUTH_INITIAL_STATE = {
-  user: null,
-  token: null,
-  loading: true,
-  isAuthenticated: false,
-} as const;
 
 // Theme Type
 export const THEME_INITIAL_STATE = {
   mode: THEMES.LIGHT,
   direction: DIRECTIONS.LTR,
 } as const;
-
-// Header Action Button Type
-export type HeaderActionButton = {
-  id: string;
-  label: string;
-  color?: 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning';
-  variant?: 'contained' | 'outlined' | 'text';
-};
-
-// Header Type
-export const HEADER_INITIAL_STATE = {
-  title: 'Dashboard',
-  actions: [],
-  lastActionId: undefined,
-  lastActionTs: undefined,
-  searchQuery: '',
-  setQueryItem: null,
-} as const;
-
-// Root State Type
-export interface RootState {
-  user: {
-    user: any | null;
-    token: string | null;
-    loading: boolean;
-    isAuthenticated: boolean;
-  };
-  theme: {
-    mode: ThemeMode;
-    direction: Direction;
-  };
-  header: {
-    title: string;
-    actions: HeaderActionButton[];
-    lastActionId?: string;
-    lastActionTs?: number;
-    searchQuery: string;
-    setQueryItem: any | null;
-  };
-  policiesUi: {
-    formOpen: boolean;
-    selectedPolicy: any | null;
-    deleteOpen: boolean;
-    policyToDeleteId: number | null;
-    filterQuery: string;
-    filterType: string;
-    filterDomain: string;
-  };
-  devicesUi: {
-    editDialogOpen: boolean;
-    selectedAgent: any | null;
-    editedAgent: any | null;
-  };
-}
-
-//logo
-
-export interface TriangleStatus {
-  level: RiskLevel;
-  jitter: boolean;
-  offset: { x: number; y: number };
-}
-
-export interface LogoState {
-  top: TriangleStatus;
-  left: TriangleStatus;
-  right: TriangleStatus;
-}
-
-// اگر این فایل منبع RootStateت هست:
-export interface RootState {
-  logo: LogoState;
-  // ... سایر استورها
-}

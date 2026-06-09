@@ -4,11 +4,15 @@ import { STORE_CONFIG } from './constants';
 import { setupListeners } from '@reduxjs/toolkit/query';
 
 // Import individual reducers
-
+import {
+  themeReducer,
+} from './reducers';
 // Import RTK Query APIs
 
 // Combine reducers
 const rootReducer = combineReducers({
+  theme: themeReducer,
+  // [authApi.reducerPath]: authApi.reducer,
 });
 
 // Check if we're in browser environment
@@ -19,6 +23,18 @@ const shouldDisablePersistence = import.meta.env.VITE_DISABLE_REDUX_PERSIST === 
 // Only import redux-persist if we're in browser and not in SSR mode
 let store: any, persistor: any;
 
+const customStorage = {
+  getItem: (key: string) => Promise.resolve(window.localStorage.getItem(key)),
+  setItem: (key: string, value: string) => {
+    window.localStorage.setItem(key, value);
+    return Promise.resolve(value);
+  },
+  removeItem: (key: string) => {
+    window.localStorage.removeItem(key);
+    return Promise.resolve();
+  },
+};
+
 try {
   if (isBrowser && !isSSR && !shouldDisablePersistence) {
     // Browser environment: use redux-persist
@@ -27,7 +43,7 @@ try {
 
     const persistConfig: any = {
       key: STORE_CONFIG.PERSIST_KEY,
-      storage: storage,
+      storage: customStorage,
       whitelist: STORE_CONFIG.PERSIST_WHITELIST,
     };
 
