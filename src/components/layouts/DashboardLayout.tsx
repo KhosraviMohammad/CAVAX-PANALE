@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Box, Toolbar } from '@mui/material';
-import { Outlet } from 'react-router-dom';
-import Header from '@/components/layouts/Header';
-import Sidebar from '@/components/layouts/Sidebar';
+import React, { useState } from "react";
+import { Box, Toolbar } from "@mui/material";
+import { Outlet } from "react-router-dom";
+import Header from "@/components/layouts/Header";
+import Sidebar from "@/components/layouts/Sidebar";
 
 const drawerWidth = 240;
 const collapsedWidth = 64;
@@ -19,16 +19,8 @@ const DashboardLayout: React.FC = () => {
     setDesktopOpen(!desktopOpen);
   };
 
-  const handleMouseEnter = () => {
-    setDesktopOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    setDesktopOpen(false);
-  };
-
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       <Header
         onDrawerToggle={handleDrawerToggle}
         onDesktopDrawerToggle={handleDesktopDrawerToggle}
@@ -49,7 +41,7 @@ const DashboardLayout: React.FC = () => {
 
       {/* Main content - همیشه فقط collapsedWidth کم می‌شود */}
       <Box
-        component='main'
+        component="main"
         sx={{
           flexGrow: 1,
           p: 0,

@@ -1,57 +1,34 @@
-import { ACTION_PREFIXES, DEFAULT_VALUES } from './constants';
+import { ACTION_PREFIXES } from "./constants";
 // Action Types
-export const SET_USER = `${ACTION_PREFIXES.APP}/setUser`;
-export const SET_TOKEN = `${ACTION_PREFIXES.APP}/setToken`;
-export const LOGIN = `${ACTION_PREFIXES.APP}/login`;
-export const LOGOUT = `${ACTION_PREFIXES.APP}/logout`;
-export const SET_THEME_MODE = `${ACTION_PREFIXES.APP}/setThemeMode`;
-export const SET_THEME_DIRECTION = `${ACTION_PREFIXES.APP}/setThemeDirection`;
-export const SET_HEADER_TITLE = `${ACTION_PREFIXES.APP}/setHeaderTitle`;
-export const SET_HEADER_ACTIONS = `${ACTION_PREFIXES.APP}/setHeaderActions`;
-export const CLEAR_HEADER = `${ACTION_PREFIXES.APP}/clearHeader`;
-export const TRIGGER_HEADER_ACTION = `${ACTION_PREFIXES.APP}/triggerHeaderAction`;
-export const RESET_LAST_ACTION = `${ACTION_PREFIXES.APP}/resetLastAction`;
-export const SET_HEADER_SEARCH_QUERY = `${ACTION_PREFIXES.APP}/setHeaderSearchQuery`;
-export const SET_HEADER_QUERY_ITEM = `${ACTION_PREFIXES.APP}/setHeaderQueryItem`;
+export const SET_USER = `${ACTION_PREFIXES.APP}/setUser` as const;
+export const SET_TOKEN = `${ACTION_PREFIXES.APP}/setToken` as const;
+export const LOGIN = `${ACTION_PREFIXES.APP}/login` as const;
+export const LOGOUT = `${ACTION_PREFIXES.APP}/logout` as const;
+export const SET_THEME_MODE = `${ACTION_PREFIXES.APP}/setThemeMode` as const;
+export const SET_THEME_DIRECTION = `${ACTION_PREFIXES.APP}/setThemeDirection` as const;
+export const SET_HEADER_TITLE = `${ACTION_PREFIXES.APP}/setHeaderTitle` as const;
+export const SET_HEADER_ACTIONS = `${ACTION_PREFIXES.APP}/setHeaderActions` as const;
+export const CLEAR_HEADER = `${ACTION_PREFIXES.APP}/clearHeader` as const;
+export const TRIGGER_HEADER_ACTION = `${ACTION_PREFIXES.APP}/triggerHeaderAction` as const;
+export const RESET_LAST_ACTION = `${ACTION_PREFIXES.APP}/resetLastAction` as const;
+export const SET_HEADER_SEARCH_QUERY = `${ACTION_PREFIXES.APP}/setHeaderSearchQuery` as const;
+export const SET_HEADER_QUERY_ITEM = `${ACTION_PREFIXES.APP}/setHeaderQueryItem` as const;
 
 // Policies UI (dialogs) action types
-export const OPEN_POLICY_FORM = `${ACTION_PREFIXES.APP}/openPolicyForm`;
-export const CLOSE_POLICY_FORM = `${ACTION_PREFIXES.APP}/closePolicyForm`;
-export const OPEN_DELETE_POLICY = `${ACTION_PREFIXES.APP}/openDeletePolicy`;
-export const CLOSE_DELETE_POLICY = `${ACTION_PREFIXES.APP}/closeDeletePolicy`;
+export const OPEN_POLICY_FORM = `${ACTION_PREFIXES.APP}/openPolicyForm` as const;
+export const CLOSE_POLICY_FORM = `${ACTION_PREFIXES.APP}/closePolicyForm` as const;
+export const OPEN_DELETE_POLICY = `${ACTION_PREFIXES.APP}/openDeletePolicy` as const;
+export const CLOSE_DELETE_POLICY = `${ACTION_PREFIXES.APP}/closeDeletePolicy` as const;
 
 // Filter action types
-export const SET_FILTER_QUERY = `${ACTION_PREFIXES.APP}/setFilterQuery`;
-export const SET_FILTER_TYPE = `${ACTION_PREFIXES.APP}/setFilterType`;
-export const SET_FILTER_DOMAIN = `${ACTION_PREFIXES.APP}/setFilterDomain`;
-export const CLEAR_FILTERS = `${ACTION_PREFIXES.APP}/clearFilters`;
+export const SET_FILTER_QUERY = `${ACTION_PREFIXES.APP}/setFilterQuery` as const;
+export const SET_FILTER_TYPE = `${ACTION_PREFIXES.APP}/setFilterType` as const;
+export const SET_FILTER_DOMAIN = `${ACTION_PREFIXES.APP}/setFilterDomain` as const;
+export const CLEAR_FILTERS = `${ACTION_PREFIXES.APP}/clearFilters` as const;
 
 // Devices UI (edit dialog) action types
-export const OPEN_EDIT_AGENT_DIALOG = `${ACTION_PREFIXES.APP}/openEditAgentDialog`;
-export const CLOSE_EDIT_AGENT_DIALOG = `${ACTION_PREFIXES.APP}/closeEditAgentDialog`;
-export const SET_EDITED_AGENT_FIELD = `${ACTION_PREFIXES.APP}/setEditedAgentField`;
+export const OPEN_EDIT_AGENT_DIALOG = `${ACTION_PREFIXES.APP}/openEditAgentDialog` as const;
+export const CLOSE_EDIT_AGENT_DIALOG = `${ACTION_PREFIXES.APP}/closeEditAgentDialog` as const;
+export const SET_EDITED_AGENT_FIELD = `${ACTION_PREFIXES.APP}/setEditedAgentField` as const;
 
-// State Types
-export const THEMES = {
-  LIGHT: 'light',
-  DARK: 'dark',
-} as const;
-
-export const DIRECTIONS = {
-  LTR: 'ltr',
-  RTL: 'rtl',
-} as const;
-
-// Type definitions
-export type ThemeMode = (typeof THEMES)[keyof typeof THEMES];
-export type Direction = (typeof DIRECTIONS)[keyof typeof DIRECTIONS];
-
-// User Type
-export const USER_INITIAL_STATE = DEFAULT_VALUES.USER;
-
-
-// Theme Type
-export const THEME_INITIAL_STATE = {
-  mode: THEMES.LIGHT,
-  direction: DIRECTIONS.LTR,
-} as const;
+export type { RootState } from "./index";

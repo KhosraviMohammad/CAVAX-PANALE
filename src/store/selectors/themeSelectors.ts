@@ -1,5 +1,5 @@
-import { THEMES, DIRECTIONS } from '@/store/types';
-import type { RootState } from '@/store/types';
+import { THEMES, DIRECTIONS } from "@/store/constants";
+import type { RootState } from "@/store";
 
 // Theme Selectors
 export const selectTheme = (state: RootState) => state.theme;
@@ -18,10 +18,10 @@ export const selectIsLTR = (state: RootState) => selectThemeDirection(state) ===
 
 export const selectThemeModeString = (state: RootState): string => {
   const mode = selectThemeMode(state);
-  return mode === THEMES.DARK ? 'dark' : 'light';
+  return mode === THEMES.DARK ? "dark" : "light";
 };
 
 export const selectThemeDirectionString = (state: RootState): string => {
   const direction = selectThemeDirection(state);
-  return direction === DIRECTIONS.RTL ? 'rtl' : 'ltr';
+  return direction === DIRECTIONS.RTL ? "rtl" : "ltr";
 };

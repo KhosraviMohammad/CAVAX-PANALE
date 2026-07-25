@@ -1,12 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { combineReducers } from 'redux';
-import { STORE_CONFIG } from './constants';
-import { setupListeners } from '@reduxjs/toolkit/query';
+import { configureStore, type Reducer } from "@reduxjs/toolkit";
+import { combineReducers } from "redux";
+import { STORE_CONFIG } from "./constants";
+import { setupListeners } from "@reduxjs/toolkit/query";
+import type { Persistor, PersistConfig } from "redux-persist";
 
 // Import individual reducers
-import {
-  themeReducer,
-} from './reducers';
+import { themeReducer } from "./reducers";
 // Import RTK Query APIs
 
 // Combine reducers
@@ -15,13 +14,16 @@ const rootReducer = combineReducers({
   // [authApi.reducerPath]: authApi.reducer,
 });
 
-// Check if we're in browser environment
-const isBrowser = typeof window !== 'undefined' && typeof localStorage !== 'undefined';
-const isSSR = import.meta.env.MODE === 'ssr';
-const shouldDisablePersistence = import.meta.env.VITE_DISABLE_REDUX_PERSIST === 'true';
+export type RootState = ReturnType<typeof rootReducer>;
+export type AppStore = ReturnType<typeof configureStore>;
 
-// Only import redux-persist if we're in browser and not in SSR mode
-let store: any, persistor: any;
+// Check if we're in browser environment
+const isBrowser = typeof window !== "undefined" && typeof localStorage !== "undefined";
+const isSSR = import.meta.env.MODE === "ssr";
+const shouldDisablePersistence = import.meta.env.VITE_DISABLE_REDUX_PERSIST === "true";
+
+let store: AppStore;
+let persistor: Persistor | null = null;
 
 const customStorage = {
   getItem: (key: string) => Promise.resolve(window.localStorage.getItem(key)),
@@ -38,60 +40,60 @@ const customStorage = {
 try {
   if (isBrowser && !isSSR && !shouldDisablePersistence) {
     // Browser environment: use redux-persist
-    const { persistStore, persistReducer }: any = await import('redux-persist');
-    const { default: storage }: any = await import('redux-persist/lib/storage');
+    const { persistStore, persistReducer } = await import("redux-persist");
 
-    const persistConfig: any = {
+    const persistConfig: PersistConfig<RootState> = {
       key: STORE_CONFIG.PERSIST_KEY,
       storage: customStorage,
-      whitelist: STORE_CONFIG.PERSIST_WHITELIST,
+      whitelist: [...STORE_CONFIG.PERSIST_WHITELIST],
     };
 
-    const persistedReducer: any = persistReducer(persistConfig, rootReducer);
+    const persistedReducer = persistReducer(
+      persistConfig,
+      rootReducer as unknown as Reducer<RootState>,
+    );
 
     store = configureStore({
       reducer: persistedReducer,
-      middleware: getDefaultMiddleware =>
+      middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
           serializableCheck: {
-            ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+            ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
           },
-        }).concat(),
+        }),
     });
 
     persistor = persistStore(store, null, () => {
-      console.log('Redux store rehydration completed');
+      console.log("Redux store rehydration completed");
     });
   } else {
     // SSR or persistence disabled: use regular store
     store = configureStore({
       reducer: rootReducer,
-      middleware: getDefaultMiddleware =>
+      middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
           serializableCheck: false,
-        }).concat(),
+        }),
     });
-
     persistor = null;
   }
 } catch (error) {
-  console.warn('Failed to setup redux-persist, using regular store:', error);
+  console.warn("Failed to setup redux-persist, using regular store:", error);
 
   // Fallback to regular store if redux-persist fails
   store = configureStore({
     reducer: rootReducer,
-    middleware: getDefaultMiddleware =>
+    middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: false,
-      }).concat(),
+      }),
   });
-
   persistor = null;
 } finally {
-  if (store) {
+  if (store!) {
     setupListeners(store.dispatch);
   }
 }
 
 export { store, persistor };
-export type AppDispatch = typeof store.dispatch;
+export type AppDispatch = AppStore["dispatch"];

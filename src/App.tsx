@@ -1,6 +1,6 @@
-import { CssBaseline, GlobalStyles } from '@mui/material';
-import { Routes, Route } from 'react-router-dom';
-import DashboardLayout from '@/components/layouts/DashboardLayout';
+import { CssBaseline, GlobalStyles } from "@mui/material";
+import { Routes, Route } from "react-router-dom";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 function App() {
   return (
@@ -10,17 +10,17 @@ function App() {
         styles={{
           body: {
             margin: 0,
-            width: '100vw',
-            height: '100vh',
-            scrollbarWidth: 'none',
+            width: "100vw",
+            height: "100vh",
+            scrollbarWidth: "none",
             // '&::-webkit-scrollbar': {
             //   display: 'none',
             // },
           },
-          '#root': {
+          "#root": {
             margin: 0,
-            width: '100%',
-            height: '100%',
+            width: "100%",
+            height: "100%",
             // scrollbarWidth: 'none',
             // '&::-webkit-scrollbar': {
             //   display: 'none',
@@ -28,17 +28,17 @@ function App() {
           },
           html: {
             margin: 0,
-            width: '100vw',
-            height: '100vh',
-            scrollbarWidth: 'none',
+            width: "100vw",
+            height: "100vh",
+            scrollbarWidth: "none",
             // '&::-webkit-scrollbar': {
             //   display: 'none',
             // },
-          }
+          },
         }}
       />
       <Routes>
-        <Route path='/' element={<DashboardLayout />} />
+        <Route path="/" element={<DashboardLayout />} />
       </Routes>
     </>
   );

@@ -1,15 +1,6 @@
-import React from 'react';
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  useTheme,
-  Box,
-  Stack,
-  IconButton,
-} from '@mui/material';
-import { MenuIcon } from '@/assets/icons';
-
+import React from "react";
+import { AppBar, Toolbar, Typography, useTheme, Box, Stack, IconButton } from "@mui/material";
+import { MenuIcon } from "@/assets/icons";
 
 interface HeaderProps {
   onDrawerToggle: () => void;
@@ -27,22 +18,19 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const theme = useTheme();
 
-
-  
-
   return (
     <AppBar
-      position='fixed'
+      position="fixed"
       sx={{
-        zIndex: theme => theme.zIndex.drawer,
+        zIndex: (theme) => theme.zIndex.drawer,
         width: {
           sm: `calc(100% - ${desktopOpen ? drawerWidth : collapsedWidth}px)`,
         },
         ml: { sm: `${desktopOpen ? drawerWidth : collapsedWidth}px` },
-        transition: 'width 0.3s ease, margin 0.3s ease',
+        transition: "width 0.3s ease, margin 0.3s ease",
         background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 10%, #1a1a1a 40%, ${theme.palette.secondary.main} 100%)`,
-        boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-        borderRadius: '0',
+        boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+        borderRadius: "0",
       }}
     >
       <Toolbar
@@ -54,15 +42,15 @@ const Header: React.FC<HeaderProps> = ({
         {/* Left: Drawer toggles */}
 
         <IconButton
-          color='inherit'
-          aria-label='toggle drawer'
-          edge='start'
+          color="inherit"
+          aria-label="toggle drawer"
+          edge="start"
           onClick={onDesktopDrawerToggle}
           sx={{
             mr: 2,
-            display: { xs: 'none', sm: 'block' },
-            color: 'white',
-            '&:hover': {
+            display: { xs: "none", sm: "block" },
+            color: "white",
+            "&:hover": {
               background: `linear-gradient(90deg, ${theme.palette.primary.main}10, rgba(255,255,255,0.08))`,
             },
           }}
@@ -73,31 +61,28 @@ const Header: React.FC<HeaderProps> = ({
         <Box
           sx={{
             flex: 1,
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
             gap: 1,
           }}
         >
           <Typography
-            variant='h6'
+            variant="h6"
             noWrap
-            component='div'
+            component="div"
             sx={{
-              color: 'white',
+              color: "white",
               fontWeight: 700,
               background: `linear-gradient(45deg, ${theme.palette.primary.main} 0%, #ffffff 50%, #f0f0f0 100%)`,
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
             }}
-          >
-
-          </Typography>
+          ></Typography>
         </Box>
         {/* Right-side actions (exclude 'filter' which appears near title) */}
-        <Stack direction='row' spacing={1} sx={{ ml: 2, alignItems: 'center' }}>
+        <Stack direction="row" spacing={1} sx={{ ml: 2, alignItems: "center" }}>
           {/* دکمه‌های اکشن قبلی */}
-          
         </Stack>
       </Toolbar>
     </AppBar>
