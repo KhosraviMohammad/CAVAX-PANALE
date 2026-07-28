@@ -32,5 +32,5 @@ export interface ThemeState {
 // Theme Type
 export const THEME_INITIAL_STATE: ThemeState = {
   mode: THEMES.LIGHT,
-  direction: DIRECTIONS.LTR,
+  direction: DIRECTIONS.RTL,
 };

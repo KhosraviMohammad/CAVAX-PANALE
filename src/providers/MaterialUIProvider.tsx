@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { createTheme, ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
-import rtlPlugin from "stylis-plugin-rtl";
+import rtlPlugin from "@mui/stylis-plugin-rtl";
+import { prefixer } from "stylis";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import { useSelector } from "react-redux";
@@ -9,13 +10,31 @@ import { selectThemeMode, selectThemeDirection } from "@/store/selectors/themeSe
 interface MaterialUIProviderProps {
   children: React.ReactNode;
 }
+// const ignoreGradientRtlPlugin = (element: any, index: number, children: any[], callback: any) => {
+//   if (element && element.children && Array.isArray(element.children)) {
+//     const processChildren = (nodes: any[]) => {
+//       for (const node of nodes) {
+//         if (node && node.type === "decl" && typeof node.value === "string") {
+//           if (node.value.includes("gradient(") && !node.value.includes("/* @noflip */")) {
+//             node.value = "/* @noflip */ " + node.value;
+//           }
+//         }
+//         if (node && node.children && Array.isArray(node.children)) {
+//           processChildren(node.children);
+//         }
+//       }
+//     };
+//     processChildren(element.children);
+//   }
+//   return (rtlPlugin as any)(element, index, children, callback);
+// };
 
 // Create dynamic cache based on direction
 const createCacheWithDirection = (direction: string) => {
   // Emotion already includes the default prefixer. Only add RTL plugin when needed.
   return createCache({
     key: direction === "rtl" ? "muirtl" : "muiltr",
-    stylisPlugins: direction === "rtl" ? [rtlPlugin] : [],
+    stylisPlugins: direction === "rtl" ? [prefixer, rtlPlugin] : [],
   });
 };
 
@@ -24,8 +43,10 @@ export const MaterialUIProvider = ({ children }: MaterialUIProviderProps) => {
   const mode = useSelector(selectThemeMode);
   const direction = useSelector(selectThemeDirection);
 
-  // Save theme preferences to localStorage whenever they change
+  // Save theme preferences to localStorage whenever they change and update document direction
   useEffect(() => {
+    document.dir = direction;
+    document.documentElement.setAttribute("dir", direction);
     localStorage.setItem("theme-mode", mode);
     localStorage.setItem("theme-direction", direction);
   }, [mode, direction]);
@@ -36,153 +57,74 @@ export const MaterialUIProvider = ({ children }: MaterialUIProviderProps) => {
     palette: {
       mode: mode,
       primary: {
-        main: "#dab23b", // Golden Yellow from logo
-        light: "#e3ce5c",
-        dark: "#a78e26",
-        contrastText: "#000000",
-      },
-      secondary: {
-        main: "#000000",
-        light: "#333333",
-        dark: "#111111",
+        main: "#1A4C8B",
+        light: "#2E6AB5",
+        dark: "#0D2E5A",
         contrastText: "#FFFFFF",
       },
+      secondary: {
+        main: "#C2A978",
+        light: "#D4C09A",
+        dark: "#9E8555",
+        contrastText: "#1B2430",
+      },
       background: {
-        default: mode === "light" ? "#FFFFFF" : "#1A1A1A",
-        paper: mode === "light" ? "#FAFAF5" : "#2A2A2A",
+        default: mode === "light" ? "#F7F6F3" : "#111820",
+        paper: mode === "light" ? "#FFFFFF" : "#1A2332",
       },
       text: {
-        primary: mode === "light" ? "#000000" : "#FFFFFF",
-        secondary: mode === "light" ? "#555555" : "#DDDDDD",
+        primary: mode === "light" ? "#1B2430" : "#F0EDE8",
+        secondary: mode === "light" ? "#4A5568" : "#B0BEC5",
       },
       error: {
-        main: "#FF6B6B",
-        light: "#FF8E8E",
-        dark: "#E55555",
+        main: "#E53935",
       },
       success: {
-        main: "#51CF66",
-        light: "#69DB7C",
-        dark: "#40C057",
+        main: "#2E7D32",
       },
       warning: {
-        main: "#FFD43B",
-        light: "#FFE066",
-        dark: "#FCC419",
+        main: "#F9A825",
       },
       info: {
-        main: "#74C0FC",
-        light: "#91D5FF",
-        dark: "#4DABF7",
+        main: "#1976D2",
       },
     },
     typography: {
-      fontFamily: ["Inter", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-      h1: {
-        fontWeight: 700,
-        fontSize: "2.5rem",
-      },
-      h2: {
-        fontWeight: 600,
-        fontSize: "2rem",
-      },
-      h3: {
-        fontWeight: 600,
-        fontSize: "1.75rem",
-      },
-      h4: {
-        fontWeight: 600,
-        fontSize: "1.5rem",
-      },
-      h5: {
-        fontWeight: 600,
-        fontSize: "1.25rem",
-      },
-      h6: {
-        fontWeight: 600,
-        fontSize: "1rem",
-      },
-      body1: {
-        fontSize: "1rem",
-        lineHeight: 1.6,
-      },
-      body2: {
-        fontSize: "0.875rem",
-        lineHeight: 1.5,
-      },
+      fontFamily: [
+        "Vazirmatn",
+        "IRANSans",
+        "Inter",
+        "Roboto",
+        "Helvetica",
+        "Arial",
+        "sans-serif",
+      ].join(","),
       button: {
         fontWeight: 600,
         textTransform: "none",
       },
     },
     shape: {
-      borderRadius: 8,
+      borderRadius: 10,
     },
     components: {
       MuiButton: {
         styleOverrides: {
           root: {
-            borderRadius: 8,
+            borderRadius: 10,
             textTransform: "none",
             fontWeight: 600,
             boxShadow: "none",
             "&:hover": {
-              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-              transform: "translateY(-1px)",
+              boxShadow: "0 4px 12px rgba(26, 76, 139, 0.25)",
             },
           },
           contained: {
-            background: "linear-gradient(135deg, #FFD700 0%, #E6C200 100%)",
+            background: "linear-gradient(135deg, #1A4C8B 0%, #0D2E5A 100%)",
+            color: "#FFFFFF",
             "&:hover": {
-              background: "linear-gradient(135deg, #E6C200 0%, #D4AF37 100%)",
+              background: "linear-gradient(135deg, #0D2E5A 0%, #071D3A 100%)",
             },
-          },
-          outlined: {
-            borderWidth: 2,
-            "&:hover": {
-              borderWidth: 2,
-            },
-          },
-        },
-      },
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            borderRadius: 12,
-            boxShadow: mode === "light" ? "0 2px 8px rgba(0,0,0,0.1)" : "0 2px 8px rgba(0,0,0,0.3)",
-          },
-        },
-      },
-      MuiTextField: {
-        styleOverrides: {
-          root: {
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 8,
-              "&:hover fieldset": {
-                borderColor: "#FFD700",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#FFD700",
-              },
-            },
-            "& .MuiInputLabel-root": {
-              fontWeight: 600,
-            },
-          },
-        },
-      },
-      MuiAlert: {
-        styleOverrides: {
-          root: {
-            borderRadius: 8,
-            fontWeight: 500,
-          },
-        },
-      },
-      MuiPaper: {
-        styleOverrides: {
-          root: {
-            borderRadius: 8,
           },
         },
       },

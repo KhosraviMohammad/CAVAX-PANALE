@@ -48,7 +48,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     <Box
       sx={{
         height: "100%",
-        background: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 10%, #1a1a1a 40%, ${theme.palette.secondary.main} 100%)`,
+        background: `linear-gradient(0deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
         color: "white",
       }}
     >
@@ -64,43 +64,49 @@ const Sidebar: React.FC<SidebarProps> = ({
       >
         <Box
           sx={{
-            width: desktopOpen ? 80 : 50,
-            height: desktopOpen ? 80 : 50,
+            width: desktopOpen ? 84 : 44,
+            height: desktopOpen ? 84 : 44,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            mb: desktopOpen ? 2 : 0,
+            mb: desktopOpen ? 1.5 : 0,
+            p: 0.5,
+            borderRadius: "16px",
+            background: "#FFFFFF",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.25)",
+            border: `2px solid ${theme.palette.secondary.main}50`,
             transition: "all 0.3s ease",
             "&:hover": {
               transform: "scale(1.05)",
+              boxShadow: "0 6px 20px rgba(0,0,0,0.35)",
             },
           }}
         >
-          {/* <Box
-            component='img'
-            src='/images/Logo.png'
-            alt='Logo'
+          <Box
+            component="img"
+            src="/images/Logo1.png"
+            alt="Logo"
             sx={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-              filter: 'drop-shadow(0 0 15px rgba(255, 255, 255, 0.4))',
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
             }}
-          /> */}
+          />
         </Box>
         {desktopOpen && (
           <Typography
             variant="h6"
-            noWrap
             component="div"
             sx={{
               fontWeight: 700,
               color: "white",
               textAlign: "center",
               fontSize: "1.1rem",
+              whiteSpace: "normal",
+              overflowWrap: "break-word",
             }}
           >
-            Panel
+            سازمان آرمستان های شهرداری اصفهان
           </Typography>
         )}
       </Box>
@@ -343,25 +349,8 @@ const Sidebar: React.FC<SidebarProps> = ({
       aria-label="mailbox folders"
     >
       <Drawer
-        variant="temporary"
-        open={mobileOpen}
-        onClose={onDrawerToggle}
-        ModalProps={{ keepMounted: true }}
-        sx={{
-          display: { xs: "block", sm: "none" },
-          "& .MuiDrawer-paper": {
-            boxSizing: "border-box",
-            width: drawerWidth,
-            borderRadius: "0",
-          },
-        }}
-      >
-        {drawer}
-      </Drawer>
-      <Drawer
         variant="permanent"
         sx={{
-          display: { xs: "none", sm: "block" },
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: desktopOpen ? drawerWidth : collapsedWidth,

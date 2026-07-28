@@ -28,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({
         },
         ml: { sm: `${desktopOpen ? drawerWidth : collapsedWidth}px` },
         transition: "width 0.3s ease, margin 0.3s ease",
-        background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 10%, #1a1a1a 40%, ${theme.palette.secondary.main} 100%)`,
+        background: `linear-gradient(90deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
         boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
         borderRadius: "0",
       }}
