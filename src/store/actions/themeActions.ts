@@ -6,11 +6,13 @@ import { SET_THEME_MODE, SET_THEME_DIRECTION } from "@/store/types";
 interface SetThemeModeAction {
   type: typeof SET_THEME_MODE;
   payload: ThemeMode;
+  [key: string]: unknown;
 }
 
 interface SetThemeDirectionAction {
   type: typeof SET_THEME_DIRECTION;
   payload: Direction;
+  [key: string]: unknown;
 }
 
 export type ThemeAction = SetThemeModeAction | SetThemeDirectionAction;

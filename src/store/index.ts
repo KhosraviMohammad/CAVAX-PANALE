@@ -5,13 +5,15 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import type { Persistor, PersistConfig } from "redux-persist";
 
 // Import individual reducers
-import { themeReducer } from "./reducers";
+import { themeReducer, headerReducer } from "./reducers";
 // Import RTK Query APIs
+import { sampleApi } from "./api/sampleApi";
 
 // Combine reducers
 const rootReducer = combineReducers({
   theme: themeReducer,
-  // [authApi.reducerPath]: authApi.reducer,
+  header: headerReducer,
+  [sampleApi.reducerPath]: sampleApi.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -60,7 +62,7 @@ try {
           serializableCheck: {
             ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
           },
-        }),
+        }).concat(sampleApi.middleware),
     });
 
     persistor = persistStore(store, null, () => {
@@ -73,7 +75,7 @@ try {
       middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
           serializableCheck: false,
-        }),
+        }).concat(sampleApi.middleware),
     });
     persistor = null;
   }
@@ -86,7 +88,7 @@ try {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: false,
-      }),
+      }).concat(sampleApi.middleware),
   });
   persistor = null;
 } finally {

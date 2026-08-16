@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { createTheme, ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import rtlPlugin from "@mui/stylis-plugin-rtl";
-import { prefixer } from "stylis";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import { useSelector } from "react-redux";
@@ -34,7 +33,7 @@ const createCacheWithDirection = (direction: string) => {
   // Emotion already includes the default prefixer. Only add RTL plugin when needed.
   return createCache({
     key: direction === "rtl" ? "muirtl" : "muiltr",
-    stylisPlugins: direction === "rtl" ? [prefixer, rtlPlugin] : [],
+    stylisPlugins: direction === "rtl" ? [rtlPlugin] : [],
   });
 };
 

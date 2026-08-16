@@ -7,7 +7,10 @@ export const LOGOUT = `${ACTION_PREFIXES.APP}/logout` as const;
 export const SET_THEME_MODE = `${ACTION_PREFIXES.APP}/setThemeMode` as const;
 export const SET_THEME_DIRECTION = `${ACTION_PREFIXES.APP}/setThemeDirection` as const;
 export const SET_HEADER_TITLE = `${ACTION_PREFIXES.APP}/setHeaderTitle` as const;
+export const SET_HEADER_DESCRIPTION = `${ACTION_PREFIXES.APP}/setHeaderDescription` as const;
+export const SET_HEADER_INFO = `${ACTION_PREFIXES.APP}/setHeaderInfo` as const;
 export const SET_HEADER_ACTIONS = `${ACTION_PREFIXES.APP}/setHeaderActions` as const;
+
 export const CLEAR_HEADER = `${ACTION_PREFIXES.APP}/clearHeader` as const;
 export const TRIGGER_HEADER_ACTION = `${ACTION_PREFIXES.APP}/triggerHeaderAction` as const;
 export const RESET_LAST_ACTION = `${ACTION_PREFIXES.APP}/resetLastAction` as const;

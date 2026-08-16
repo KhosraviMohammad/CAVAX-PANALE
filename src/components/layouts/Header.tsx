@@ -1,5 +1,19 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, useTheme, Box, Stack, IconButton } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  useTheme,
+  Box,
+  Stack,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
+import { Help as HelpIcon } from "@mui/icons-material";
+// import {BlockIcon as HelpIcon} from "@/assets/icons";
+
+import { useSelector } from "react-redux";
+import { selectHeaderTitle, selectHeaderDescription } from "@/store/selectors";
 import { MenuIcon } from "@/assets/icons";
 
 interface HeaderProps {
@@ -17,6 +31,8 @@ const Header: React.FC<HeaderProps> = ({
   collapsedWidth,
 }) => {
   const theme = useTheme();
+  const pageTitle = useSelector(selectHeaderTitle);
+  const pageDescription = useSelector(selectHeaderDescription);
 
   return (
     <AppBar
@@ -78,8 +94,29 @@ const Header: React.FC<HeaderProps> = ({
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
-          ></Typography>
+          >
+            {pageTitle}
+          </Typography>
+
+          {pageDescription && (
+            <Tooltip title={pageDescription} arrow placement="bottom">
+              <IconButton
+                size="small"
+                sx={{
+                  color: "rgba(255, 255, 255, 0.85)",
+                  p: 0.5,
+                  "&:hover": {
+                    color: "#ffffff",
+                    backgroundColor: "rgba(255, 255, 255, 0.15)",
+                  },
+                }}
+              >
+                <HelpIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
         </Box>
+
         {/* Right-side actions (exclude 'filter' which appears near title) */}
         <Stack direction="row" spacing={1} sx={{ ml: 2, alignItems: "center" }}>
           {/* دکمه‌های اکشن قبلی */}

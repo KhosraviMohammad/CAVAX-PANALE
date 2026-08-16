@@ -13,16 +13,9 @@ import {
   IconButton,
   useTheme,
 } from "@mui/material";
-import {
-  DashboardIcon,
-  SidebarSecurityIcon,
-  SidebarSettingsIcon,
-  DevicesIcon,
-  LogoutIcon,
-  ChevronLeftIcon,
-  PersonIcon,
-} from "@/assets/icons";
-import { useNavigate } from "react-router-dom";
+import { LogoutIcon, ChevronLeftIcon } from "@/assets/icons";
+import { Assignment as SampleIcon } from "@mui/icons-material";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface SidebarProps {
   drawerWidth: number;
@@ -42,7 +35,16 @@ const Sidebar: React.FC<SidebarProps> = ({
   onDesktopDrawerToggle,
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
+
+  const menuItems = [
+    {
+      title: "صفحه نمونه",
+      path: "/sample",
+      icon: <SampleIcon />,
+    },
+  ];
 
   const drawer = (
     <Box
@@ -106,7 +108,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               overflowWrap: "break-word",
             }}
           >
-            سازمان آرمستان های شهرداری اصفهان
+            سیستم مانیتورینگ BSCADA
           </Typography>
         )}
       </Box>
@@ -141,198 +143,96 @@ const Sidebar: React.FC<SidebarProps> = ({
           </Box>
         </IconButton>
       </Toolbar>
+
       <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
-      <List>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => navigate("/dashboard")}
-            sx={{
-              minHeight: 48,
-              justifyContent: desktopOpen ? "initial" : "center",
-              px: 2.5,
-              color: "white",
-              "&:hover": {
-                background: `linear-gradient(90deg, ${theme.palette.primary.main}10, rgba(255,255,255,0.08))`,
-              },
-              "&.Mui-selected": {
-                background: `linear-gradient(90deg, ${theme.palette.primary.main}15, rgba(255,255,255,0.15))`,
-                "&:hover": {
-                  background: `linear-gradient(90deg, ${theme.palette.primary.main}20, rgba(255,255,255,0.2))`,
-                },
-              },
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: desktopOpen ? 3 : "auto",
-                justifyContent: "center",
-                color: "white",
-              }}
-            >
-              <DashboardIcon />
-            </ListItemIcon>
-            {desktopOpen && <ListItemText primary="Dashboard" sx={{ color: "white" }} />}
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => navigate("/dashboard/policies")}
-            sx={{
-              minHeight: 48,
-              justifyContent: desktopOpen ? "initial" : "center",
-              px: 2.5,
-              color: "white",
-              "&:hover": {
-                background: `linear-gradient(90deg, ${theme.palette.primary.main}10, rgba(255,255,255,0.08))`,
-              },
-              "&.Mui-selected": {
-                background: `linear-gradient(90deg, ${theme.palette.primary.main}15, rgba(255,255,255,0.15))`,
-                "&:hover": {
-                  background: `linear-gradient(90deg, ${theme.palette.primary.main}20, rgba(255,255,255,0.2))`,
-                },
-              },
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: desktopOpen ? 3 : "auto",
-                justifyContent: "center",
-                color: "white",
-              }}
-            >
-              <SidebarSecurityIcon />
-            </ListItemIcon>
-            {desktopOpen && <ListItemText primary="Policies" sx={{ color: "white" }} />}
-          </ListItemButton>
-        </ListItem>
 
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => navigate("/dashboard/policies/profile")}
-            sx={{
-              pl: desktopOpen ? 6 : 2, // تو رفتگی زیرمنو
-              minHeight: 40,
-              justifyContent: desktopOpen ? "initial" : "center",
-              px: 2.5,
-              color: "white",
-              "&:hover": {
-                background: `linear-gradient(90deg, ${theme.palette.primary.main}10, rgba(255,255,255,0.08))`,
-              },
-              "&.Mui-selected": {
-                background: `linear-gradient(90deg, ${theme.palette.primary.main}15, rgba(255,255,255,0.15))`,
-                "&:hover": {
-                  background: `linear-gradient(90deg, ${theme.palette.primary.main}20, rgba(255,255,255,0.2))`,
-                },
-              },
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: desktopOpen ? 3 : "auto",
-                justifyContent: "center",
-                color: "white",
-              }}
-            >
-              <PersonIcon /> {/* آیکن پروفایل */}
-            </ListItemIcon>
-            {desktopOpen && <ListItemText primary="Profile" sx={{ color: "white" }} />}
-          </ListItemButton>
-        </ListItem>
+      <List sx={{ px: 1, pt: 1 }}>
+        {menuItems.map((item) => {
+          const isActive =
+            location.pathname === item.path ||
+            (item.path === "/sample" && location.pathname === "/");
 
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => navigate("/dashboard/devices")}
-            sx={{
-              minHeight: 48,
-              justifyContent: desktopOpen ? "initial" : "center",
-              px: 2.5,
-              color: "white",
-              "&:hover": {
-                background: `linear-gradient(90deg, ${theme.palette.primary.main}10, rgba(255,255,255,0.08))`,
-              },
-              "&.Mui-selected": {
-                background: `linear-gradient(90deg, ${theme.palette.primary.main}15, rgba(255,255,255,0.15))`,
-                "&:hover": {
-                  background: `linear-gradient(90deg, ${theme.palette.primary.main}20, rgba(255,255,255,0.2))`,
-                },
-              },
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: desktopOpen ? 3 : "auto",
-                justifyContent: "center",
-                color: "white",
-              }}
-            >
-              <DevicesIcon />
-            </ListItemIcon>
-            {desktopOpen && <ListItemText primary="Devices" sx={{ color: "white" }} />}
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => navigate("/dashboard/settings")}
-            sx={{
-              minHeight: 48,
-              justifyContent: desktopOpen ? "initial" : "center",
-              px: 2.5,
-              color: "white",
-              "&:hover": {
-                background: `linear-gradient(90deg, ${theme.palette.primary.main}10, rgba(255,255,255,0.08))`,
-              },
-              "&.Mui-selected": {
-                background: `linear-gradient(90deg, ${theme.palette.primary.main}15, rgba(255,255,255,0.15))`,
-                "&:hover": {
-                  background: `linear-gradient(90deg, ${theme.palette.primary.main}20, rgba(255,255,255,0.2))`,
-                },
-              },
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: desktopOpen ? 3 : "auto",
-                justifyContent: "center",
-                color: "white",
-              }}
-            >
-              <SidebarSettingsIcon />
-            </ListItemIcon>
-            {desktopOpen && <ListItemText primary="Settings" sx={{ color: "white" }} />}
-          </ListItemButton>
-        </ListItem>
+          return (
+            <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
+              <ListItemButton
+                selected={isActive}
+                onClick={() => navigate(item.path)}
+                sx={{
+                  minHeight: 48,
+                  borderRadius: 2,
+                  justifyContent: desktopOpen ? "initial" : "center",
+                  px: 2,
+                  color: "white",
+                  transition: "all 0.2s ease",
+                  "&:hover": {
+                    background: "rgba(255,255,255,0.15)",
+                  },
+                  "&.Mui-selected": {
+                    background: "rgba(255,255,255,0.25)",
+                    boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+                    "&:hover": {
+                      background: "rgba(255,255,255,0.3)",
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: desktopOpen ? 2 : "auto",
+                    justifyContent: "center",
+                    color: "white",
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+                {desktopOpen && (
+                  <ListItemText
+                    primary={item.title}
+                    slotProps={{
+                      primary: {
+                        sx: {
+                          fontSize: "0.95rem",
+                          fontWeight: isActive ? 700 : 500,
+                        },
+                      },
+                    }}
+                  />
+                )}
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
       </List>
-      <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
-      <List>
+
+      <Divider sx={{ borderColor: "rgba(255,255,255,0.1)", my: 1 }} />
+
+      <List sx={{ px: 1 }}>
         <ListItem disablePadding>
           <ListItemButton
             onClick={() => navigate("/login")}
             sx={{
               minHeight: 48,
+              borderRadius: 2,
               justifyContent: desktopOpen ? "initial" : "center",
-              px: 2.5,
+              px: 2,
               color: "white",
               "&:hover": {
-                background: `linear-gradient(90deg, ${theme.palette.primary.main}10, rgba(255,255,255,0.08))`,
+                background: "rgba(255,255,255,0.15)",
               },
             }}
           >
             <ListItemIcon
               sx={{
                 minWidth: 0,
-                mr: desktopOpen ? 3 : "auto",
+                mr: desktopOpen ? 2 : "auto",
                 justifyContent: "center",
                 color: "white",
               }}
             >
               <LogoutIcon />
             </ListItemIcon>
-            {desktopOpen && <ListItemText primary="Logout" sx={{ color: "white" }} />}
+            {desktopOpen && <ListItemText primary="خروج از حساب" sx={{ color: "white" }} />}
           </ListItemButton>
         </ListItem>
       </List>
