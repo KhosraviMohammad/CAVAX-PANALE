@@ -3,11 +3,11 @@ import { Box, CircularProgress, Alert } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setHeaderInfo } from "@/store/actions";
 import { useGetUsersQuery } from "@/store/api/usersApi";
-import type { User } from "@/store/api/usersApi";
 
 import { UsersKpiCards } from "@/components/users/UsersKpiCards";
 import { UsersHeaderControls, type UserStatusFilter } from "@/components/users/UsersHeaderControls";
 import { UsersTable } from "@/components/users/UsersTable";
+import { UserFormDialog } from "@/components/users/UserFormDialog";
 
 const UsersPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -16,12 +16,12 @@ const UsersPage: React.FC = () => {
     dispatch(
       setHeaderInfo({
         title: "مدیریت کاربران",
-        description: "مشاهده و برسی وضعیت حساب‌های کاربری، فیلترها و اطلاعات احراز هویت",
+        description: "مشاهده و مدیریت حساب‌های کاربری، ایجاد کاربر جدید و اطلاعات احراز هویت",
       }),
     );
   }, [dispatch]);
 
-  // States
+  // Page level UI States (search, filters, pagination)
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<UserStatusFilter>("ALL");
   const [page, setPage] = useState(0);
@@ -67,7 +67,7 @@ const UsersPage: React.FC = () => {
       {/* 1. KPI Statistic Summary Cards */}
       <UsersKpiCards users={rawUsers} totalCount={usersResponse?.count} />
 
-      {/* 2. Control Panel Header (Search, Status Filter, Refresh Button) */}
+      {/* 2. Control Panel Header (Search, Status Filter & Refresh Button) */}
       <UsersHeaderControls
         searchTerm={searchTerm}
         onSearchChange={(val) => {
@@ -100,6 +100,9 @@ const UsersPage: React.FC = () => {
           onPageChange={setPage}
         />
       )}
+
+      {/* 4. Self-Contained Create User Dialog */}
+      <UserFormDialog />
     </Box>
   );
 };

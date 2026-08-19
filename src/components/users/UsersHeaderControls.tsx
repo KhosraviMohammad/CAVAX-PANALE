@@ -13,15 +13,20 @@ import {
   Divider,
   ListItemText,
   Chip,
+  Button,
   useTheme,
   alpha,
 } from "@mui/material";
+import { useDispatch } from "react-redux";
+
+import { openUserForm } from "@/store/actions";
 import {
   SearchIcon,
   FilterListIcon as FilterIcon,
   CheckIcon,
   CloseIcon,
   RefreshIcon,
+  AddIcon,
 } from "@/assets/icons";
 
 export type UserStatusFilter = "ALL" | "ACTIVE" | "ADMIN" | "VERIFIED";
@@ -42,6 +47,7 @@ export const UsersHeaderControls: React.FC<UsersHeaderControlsProps> = ({
   onRefresh,
 }) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleOpenFilterMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -194,6 +200,15 @@ export const UsersHeaderControls: React.FC<UsersHeaderControlsProps> = ({
             <RefreshIcon />
           </IconButton>
         </Tooltip>
+
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={() => dispatch(openUserForm())}
+        >
+          افزودن کاربر جدید
+        </Button>
       </Box>
     </Paper>
   );

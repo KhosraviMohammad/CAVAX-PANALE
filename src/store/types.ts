@@ -30,9 +30,8 @@ export const SET_FILTER_TYPE = `${ACTION_PREFIXES.APP}/setFilterType` as const;
 export const SET_FILTER_DOMAIN = `${ACTION_PREFIXES.APP}/setFilterDomain` as const;
 export const CLEAR_FILTERS = `${ACTION_PREFIXES.APP}/clearFilters` as const;
 
-// Devices UI (edit dialog) action types
-export const OPEN_EDIT_AGENT_DIALOG = `${ACTION_PREFIXES.APP}/openEditAgentDialog` as const;
-export const CLOSE_EDIT_AGENT_DIALOG = `${ACTION_PREFIXES.APP}/closeEditAgentDialog` as const;
-export const SET_EDITED_AGENT_FIELD = `${ACTION_PREFIXES.APP}/setEditedAgentField` as const;
+// Users UI (dialogs) action types
+export const OPEN_USER_FORM = `${ACTION_PREFIXES.APP}/openUserForm` as const;
+export const CLOSE_USER_FORM = `${ACTION_PREFIXES.APP}/closeUserForm` as const;
 
 export type { RootState } from "./index";

@@ -18,6 +18,21 @@ export interface User {
   created_at: string;
 }
 
+export interface CreateUserInput {
+  phone_number: string;
+  username: string;
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  gender?: string;
+  address?: string;
+  national_code?: string;
+  is_active?: boolean;
+  verified?: boolean;
+  is_admin?: boolean;
+  password?: string;
+}
+
 export interface UsersResponse {
   count: number;
   next: string | null;
@@ -60,7 +75,15 @@ export const usersApi = createApi({
       },
       providesTags: ["Users"],
     }),
+    createUser: builder.mutation<User, CreateUserInput>({
+      query: (body) => ({
+        url: "/account/admin/users/",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Users"],
+    }),
   }),
 });
 
-export const { useGetUsersQuery } = usersApi;
+export const { useGetUsersQuery, useCreateUserMutation } = usersApi;

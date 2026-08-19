@@ -5,7 +5,7 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import type { Persistor, PersistConfig } from "redux-persist";
 
 // Import individual reducers
-import { themeReducer, headerReducer, authReducer } from "./reducers";
+import { themeReducer, headerReducer, authReducer, usersUiReducer } from "./reducers";
 // Import RTK Query APIs
 import { sampleApi } from "./api/sampleApi";
 import { authApi } from "./api/authApi";
@@ -16,6 +16,7 @@ const rootReducer = combineReducers({
   theme: themeReducer,
   header: headerReducer,
   auth: authReducer,
+  usersUi: usersUiReducer,
   [sampleApi.reducerPath]: sampleApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
   [usersApi.reducerPath]: usersApi.reducer,

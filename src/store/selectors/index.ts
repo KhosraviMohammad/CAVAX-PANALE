@@ -4,6 +4,7 @@ import type { RootState } from "@/store/types";
 export * from "./themeSelectors";
 export * from "./headerSelectors";
 export * from "./authSelectors";
+export * from "./usersUiSelectors";
 
 // Memoized selectors for better performance
 export const createMemoizedSelector = <T, R>(
