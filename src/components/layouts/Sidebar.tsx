@@ -16,6 +16,8 @@ import {
 import { LogoutIcon, ChevronLeftIcon } from "@/assets/icons";
 import { Assignment as SampleIcon } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "@/store/actions";
 
 interface SidebarProps {
   drawerWidth: number;
@@ -36,6 +38,12 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
   const theme = useTheme();
 
   const menuItems = [
@@ -210,7 +218,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       <List sx={{ px: 1 }}>
         <ListItem disablePadding>
           <ListItemButton
-            onClick={() => navigate("/login")}
+            onClick={handleLogout}
             sx={{
               minHeight: 48,
               borderRadius: 2,

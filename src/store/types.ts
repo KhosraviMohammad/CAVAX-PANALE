@@ -4,6 +4,7 @@ export const SET_USER = `${ACTION_PREFIXES.APP}/setUser` as const;
 export const SET_TOKEN = `${ACTION_PREFIXES.APP}/setToken` as const;
 export const LOGIN = `${ACTION_PREFIXES.APP}/login` as const;
 export const LOGOUT = `${ACTION_PREFIXES.APP}/logout` as const;
+export const SET_CREDENTIALS = `${ACTION_PREFIXES.APP}/setCredentials` as const;
 export const SET_THEME_MODE = `${ACTION_PREFIXES.APP}/setThemeMode` as const;
 export const SET_THEME_DIRECTION = `${ACTION_PREFIXES.APP}/setThemeDirection` as const;
 export const SET_HEADER_TITLE = `${ACTION_PREFIXES.APP}/setHeaderTitle` as const;

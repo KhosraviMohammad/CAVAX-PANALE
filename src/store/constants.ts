@@ -1,7 +1,7 @@
 // Store Configuration
 export const STORE_CONFIG = {
   PERSIST_KEY: "root",
-  PERSIST_WHITELIST: ["theme"],
+  PERSIST_WHITELIST: ["theme", "auth"],
 } as const;
 
 // Action Type Prefixes

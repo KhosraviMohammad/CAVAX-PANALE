@@ -3,6 +3,7 @@ import type { RootState } from "@/store/types";
 // Export all selectors
 export * from "./themeSelectors";
 export * from "./headerSelectors";
+export * from "./authSelectors";
 
 // Memoized selectors for better performance
 export const createMemoizedSelector = <T, R>(

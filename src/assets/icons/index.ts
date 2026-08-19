@@ -17,6 +17,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import PersonIcon from "@mui/icons-material/Person";
 import LockIcon from "@mui/icons-material/Lock";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 // Policies page icons
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -68,6 +69,7 @@ export {
   VisibilityOffIcon,
   PersonIcon,
   LockIcon,
+  AdminPanelSettingsIcon,
 
   // Policies page icons
   MoreVertIcon,

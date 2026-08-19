@@ -2,8 +2,10 @@ import React, { Suspense, lazy } from "react";
 import { CssBaseline, GlobalStyles, Box, CircularProgress } from "@mui/material";
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { ProtectedRoute, PublicOnlyRoute } from "@/components/common/AuthGuard";
 
 const SamplePage = lazy(() => import("@/pages/SamplePage"));
+const LoginPage = lazy(() => import("@/pages/LoginPage"));
 
 const PageLoader = () => (
   <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 400 }}>
@@ -38,10 +40,18 @@ function App() {
       />
       <Suspense fallback={<PageLoader />}>
         <Routes>
-          <Route path="/" element={<DashboardLayout />}>
-            <Route index element={<SamplePage />} />
-            <Route path="sample" element={<SamplePage />} />
-            <Route path="samples" element={<SamplePage />} />
+          {/* Public Routes (Only accessible when not logged in) */}
+          <Route element={<PublicOnlyRoute />}>
+            <Route path="/login" element={<LoginPage />} />
+          </Route>
+
+          {/* Protected Routes (Require authentication) */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<DashboardLayout />}>
+              <Route index element={<SamplePage />} />
+              <Route path="sample" element={<SamplePage />} />
+              <Route path="samples" element={<SamplePage />} />
+            </Route>
           </Route>
         </Routes>
       </Suspense>
