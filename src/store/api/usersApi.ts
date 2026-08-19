@@ -18,6 +18,34 @@ export interface User {
   created_at: string;
 }
 
+export interface UserProfile {
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  email_verified?: boolean;
+  gender?: string;
+  address?: string;
+  picture?: string;
+  national_code?: string;
+  invitation_code?: string;
+  deposit_tracking_id?: string;
+}
+
+export interface UserDetails {
+  uuid: string;
+  username: string;
+  phone_number: string;
+  is_active: boolean;
+  is_admin: boolean;
+  is_superuser?: boolean;
+  verified: boolean;
+  two_fa_enabled?: boolean;
+  last_login?: string | null;
+  created_at?: string;
+  updated_at?: string;
+  profile?: UserProfile;
+}
+
 export interface CreateUserInput {
   phone_number: string;
   username: string;
@@ -31,6 +59,11 @@ export interface CreateUserInput {
   verified?: boolean;
   is_admin?: boolean;
   password?: string;
+}
+
+export interface UpdateUserInput {
+  uuid: string;
+  body: Partial<CreateUserInput>;
 }
 
 export interface UsersResponse {
@@ -75,6 +108,9 @@ export const usersApi = createApi({
       },
       providesTags: ["Users"],
     }),
+    getUserByUuid: builder.query<UserDetails, string>({
+      query: (uuid) => `/account/admin/users/${uuid}/`,
+    }),
     createUser: builder.mutation<User, CreateUserInput>({
       query: (body) => ({
         url: "/account/admin/users/",
@@ -83,7 +119,20 @@ export const usersApi = createApi({
       }),
       invalidatesTags: ["Users"],
     }),
+    updateUser: builder.mutation<User, UpdateUserInput>({
+      query: ({ uuid, body }) => ({
+        url: `/account/admin/users/${uuid}/`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Users"],
+    }),
   }),
 });
 
-export const { useGetUsersQuery, useCreateUserMutation } = usersApi;
+export const {
+  useGetUsersQuery,
+  useGetUserByUuidQuery,
+  useCreateUserMutation,
+  useUpdateUserMutation,
+} = usersApi;

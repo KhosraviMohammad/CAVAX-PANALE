@@ -10,7 +10,11 @@ export const createUserSchema = z.object({
   gender: z.string().default("male"),
   address: z.string().optional(),
   national_code: z.string().optional(),
-  password: z.string().min(6, { message: "رمز عبور باید حداقل ۶ کاراکتر باشد" }),
+  password: z
+    .string()
+    .min(6, { message: "رمز عبور باید حداقل ۶ کاراکتر باشد" })
+    .optional()
+    .or(z.literal("")),
   is_active: z.boolean().default(true),
   verified: z.boolean().default(true),
   is_admin: z.boolean().default(false),

@@ -15,7 +15,9 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
-import { ChevronRightIcon, ChevronLeftIcon, InfoIcon } from "@/assets/icons";
+import { useDispatch } from "react-redux";
+import { openEditUserForm } from "@/store/actions";
+import { ChevronRightIcon, ChevronLeftIcon, EditIcon } from "@/assets/icons";
 import type { User } from "@/store/api/usersApi";
 
 interface UsersTableProps {
@@ -36,6 +38,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
   onUserClick,
 }) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
 
   return (
     <Card elevation={2} sx={{ overflow: "hidden" }}>
@@ -51,7 +54,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                 وضعیت
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                جزئیات
+                عملیات
               </TableCell>
             </TableRow>
           </TableHead>
@@ -136,14 +139,17 @@ export const UsersTable: React.FC<UsersTableProps> = ({
 
                     {/* Actions */}
                     <TableCell align="center">
-                      <Tooltip title="مشاهده جزئیات کاربر">
+                      <Tooltip title="ویرایش کاربر">
                         <IconButton
                           color="primary"
                           size="small"
-                          onClick={() => onUserClick?.(user)}
+                          onClick={() => {
+                            dispatch(openEditUserForm(user.uuid));
+                            onUserClick?.(user);
+                          }}
                           sx={{ borderRadius: 1 }}
                         >
-                          <InfoIcon fontSize="small" />
+                          <EditIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
                     </TableCell>
