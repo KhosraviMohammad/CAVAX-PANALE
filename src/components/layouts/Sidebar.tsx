@@ -13,7 +13,7 @@ import {
   IconButton,
   useTheme,
 } from "@mui/material";
-import { LogoutIcon, ChevronLeftIcon } from "@/assets/icons";
+import { LogoutIcon, ChevronLeftIcon, PeopleIcon } from "@/assets/icons";
 import { Assignment as SampleIcon } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -47,6 +47,11 @@ const Sidebar: React.FC<SidebarProps> = ({
   const theme = useTheme();
 
   const menuItems = [
+    {
+      title: "مدیریت کاربران",
+      path: "/users",
+      icon: <PeopleIcon />,
+    },
     {
       title: "صفحه نمونه",
       path: "/sample",

@@ -9,6 +9,7 @@ import { themeReducer, headerReducer, authReducer } from "./reducers";
 // Import RTK Query APIs
 import { sampleApi } from "./api/sampleApi";
 import { authApi } from "./api/authApi";
+import { usersApi } from "./api/usersApi";
 
 // Combine reducers
 const rootReducer = combineReducers({
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   [sampleApi.reducerPath]: sampleApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
+  [usersApi.reducerPath]: usersApi.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -65,7 +67,7 @@ try {
           serializableCheck: {
             ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
           },
-        }).concat(sampleApi.middleware, authApi.middleware),
+        }).concat(sampleApi.middleware, authApi.middleware, usersApi.middleware),
     });
 
     persistor = persistStore(store, null, () => {
@@ -78,7 +80,7 @@ try {
       middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
           serializableCheck: false,
-        }).concat(sampleApi.middleware, authApi.middleware),
+        }).concat(sampleApi.middleware, authApi.middleware, usersApi.middleware),
     });
     persistor = null;
   }
@@ -91,7 +93,7 @@ try {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: false,
-      }).concat(sampleApi.middleware, authApi.middleware),
+      }).concat(sampleApi.middleware, authApi.middleware, usersApi.middleware),
   });
   persistor = null;
 } finally {

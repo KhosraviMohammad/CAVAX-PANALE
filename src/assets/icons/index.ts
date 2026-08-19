@@ -11,6 +11,7 @@ import DevicesIcon from "@mui/icons-material/Devices";
 import RouterIcon from "@mui/icons-material/Router";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 // Login page icons
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -49,6 +50,7 @@ import ErrorIcon from "@mui/icons-material/Error";
 import WarningIcon from "@mui/icons-material/Warning";
 import InfoIcon from "@mui/icons-material/Info";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 // Export all icons
 export {
@@ -63,6 +65,7 @@ export {
   RouterIcon,
   LogoutIcon,
   ChevronLeftIcon,
+  ChevronRightIcon,
 
   // Login page icons
   VisibilityIcon,
@@ -101,4 +104,5 @@ export {
   WarningIcon,
   InfoIcon,
   DragIndicatorIcon,
+  RefreshIcon,
 };
