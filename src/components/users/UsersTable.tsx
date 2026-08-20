@@ -68,7 +68,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                     {/* Username */}
                     <TableCell>
                       <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-                        {user.username ? `@${user.username}` : "-"}
+                        {user.username ? `${user.username}` : "-"}
                       </Typography>
                     </TableCell>
 

@@ -12,10 +12,11 @@ import {
   Select,
   MenuItem,
   FormControlLabel,
-  Checkbox,
+  Switch,
   CircularProgress,
   FormHelperText,
   Box,
+  IconButton,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
@@ -29,6 +30,7 @@ import {
   useGetUserByUuidQuery,
 } from "@/store/api/usersApi";
 import { createUserSchema, type CreateUserFormData, zodResolver } from "@/schemas/userSchemas";
+import { CloseIcon } from "@/assets/icons";
 
 export const UserFormDialog: React.FC = () => {
   const dispatch = useDispatch();
@@ -64,9 +66,7 @@ export const UserFormDialog: React.FC = () => {
       last_name: "",
       email: "",
       gender: "male",
-      address: "",
       national_code: "",
-      password: "",
       is_active: true,
       verified: true,
       is_admin: false,
@@ -83,9 +83,7 @@ export const UserFormDialog: React.FC = () => {
         last_name: userDetails.profile?.last_name || "",
         email: userDetails.profile?.email || "",
         gender: userDetails.profile?.gender || "male",
-        address: userDetails.profile?.address || "",
         national_code: userDetails.profile?.national_code || "",
-        password: "",
         is_active: Boolean(userDetails.is_active),
         verified: Boolean(userDetails.verified),
         is_admin: Boolean(userDetails.is_admin),
@@ -98,9 +96,7 @@ export const UserFormDialog: React.FC = () => {
         last_name: "",
         email: "",
         gender: "male",
-        address: "",
         national_code: "",
-        password: "",
         is_active: true,
         verified: true,
         is_admin: false,
@@ -111,11 +107,7 @@ export const UserFormDialog: React.FC = () => {
   const handleFormSubmit = async (formData: CreateUserFormData) => {
     try {
       if (isEditMode && editingUserUuid) {
-        const payload: Partial<CreateUserFormData> = { ...formData };
-        if (!payload.password) {
-          delete payload.password;
-        }
-        await updateUser({ uuid: editingUserUuid, body: payload }).unwrap();
+        await updateUser({ uuid: editingUserUuid, body: formData }).unwrap();
         toast.success("اطلاعات کاربر با موفقیت به‌روزرسانی شد");
       } else {
         await createUser(formData).unwrap();
@@ -174,8 +166,18 @@ export const UserFormDialog: React.FC = () => {
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ fontWeight: "bold" }}>
-        {isEditMode ? "ویرایش کاربر" : "افزودن کاربر جدید"}
+      <DialogTitle
+        sx={{
+          fontWeight: "bold",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <span>{isEditMode ? "ویرایش کاربر" : "افزودن کاربر جدید"}</span>
+        <IconButton onClick={handleClose} size="small" aria-label="close">
+          <CloseIcon />
+        </IconButton>
       </DialogTitle>
 
       <form onSubmit={handleSubmit(handleFormSubmit)} noValidate>
@@ -187,24 +189,13 @@ export const UserFormDialog: React.FC = () => {
           ) : (
             <Grid container spacing={2}>
               {/* Username */}
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   fullWidth
                   label="نام کاربری"
                   {...register("username")}
                   error={!!errors.username}
                   helperText={errors.username?.message}
-                />
-              </Grid>
-
-              {/* Phone Number */}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  label="شماره تلفن"
-                  {...register("phone_number")}
-                  error={!!errors.phone_number}
-                  helperText={errors.phone_number?.message}
                 />
               </Grid>
 
@@ -229,22 +220,16 @@ export const UserFormDialog: React.FC = () => {
                   helperText={errors.last_name?.message}
                 />
               </Grid>
-
-              {/* Password */}
+              {/* Phone Number */}
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
-                  type="password"
-                  label={isEditMode ? "رمز عبور جدید (اختیاری)" : "رمز عبور"}
-                  {...register("password")}
-                  error={!!errors.password}
-                  helperText={
-                    errors.password?.message ||
-                    (isEditMode ? "در صورت عدم نیاز به تغییر خالی بگذارید" : undefined)
-                  }
+                  label="شماره تلفن"
+                  {...register("phone_number")}
+                  error={!!errors.phone_number}
+                  helperText={errors.phone_number?.message}
                 />
               </Grid>
-
               {/* National Code */}
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
@@ -279,7 +264,6 @@ export const UserFormDialog: React.FC = () => {
                       <Select {...field} labelId="gender-select-label" label="جنسیت">
                         <MenuItem value="male">مرد</MenuItem>
                         <MenuItem value="female">زن</MenuItem>
-                        <MenuItem value="other">سایر</MenuItem>
                       </Select>
                       {errors.gender && <FormHelperText>{errors.gender.message}</FormHelperText>}
                     </FormControl>
@@ -287,27 +271,20 @@ export const UserFormDialog: React.FC = () => {
                 />
               </Grid>
 
-              {/* Address */}
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={2}
-                  label="آدرس"
-                  {...register("address")}
-                  error={!!errors.address}
-                  helperText={errors.address?.message}
-                />
-              </Grid>
-
-              {/* Checkboxes */}
+              {/* Switch Toggle Options */}
               <Grid size={{ xs: 12, sm: 4 }}>
                 <Controller
                   name="is_active"
                   control={control}
                   render={({ field }) => (
                     <FormControlLabel
-                      control={<Checkbox {...field} checked={field.value} />}
+                      control={
+                        <Switch
+                          checked={field.value}
+                          onChange={(e) => field.onChange(e.target.checked)}
+                          color="primary"
+                        />
+                      }
                       label="حساب فعال باشد"
                     />
                   )}
@@ -320,7 +297,13 @@ export const UserFormDialog: React.FC = () => {
                   control={control}
                   render={({ field }) => (
                     <FormControlLabel
-                      control={<Checkbox {...field} checked={field.value} />}
+                      control={
+                        <Switch
+                          checked={field.value}
+                          onChange={(e) => field.onChange(e.target.checked)}
+                          color="primary"
+                        />
+                      }
                       label="احراز هویت شده"
                     />
                   )}
@@ -333,7 +316,13 @@ export const UserFormDialog: React.FC = () => {
                   control={control}
                   render={({ field }) => (
                     <FormControlLabel
-                      control={<Checkbox {...field} checked={field.value} />}
+                      control={
+                        <Switch
+                          checked={field.value}
+                          onChange={(e) => field.onChange(e.target.checked)}
+                          color="primary"
+                        />
+                      }
                       label="دسترسی مدیر"
                     />
                   )}

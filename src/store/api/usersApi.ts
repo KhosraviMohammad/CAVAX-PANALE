@@ -94,7 +94,7 @@ export const usersApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users"],
+  tagTypes: ["Users", "UserDetail"],
   endpoints: (builder) => ({
     getUsers: builder.query<UsersResponse, GetUsersParams | void>({
       query: (params) => {
@@ -110,6 +110,7 @@ export const usersApi = createApi({
     }),
     getUserByUuid: builder.query<UserDetails, string>({
       query: (uuid) => `/account/admin/users/${uuid}/`,
+      providesTags: (result, error, uuid) => [{ type: "UserDetail", id: uuid }],
     }),
     createUser: builder.mutation<User, CreateUserInput>({
       query: (body) => ({
@@ -125,7 +126,7 @@ export const usersApi = createApi({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: (result, error, { uuid }) => ["Users", { type: "UserDetail", id: uuid }],
     }),
   }),
 });
