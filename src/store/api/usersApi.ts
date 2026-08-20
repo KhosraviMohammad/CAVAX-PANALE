@@ -82,6 +82,22 @@ export interface GetUsersParams {
   search?: string;
 }
 
+export interface UserStatsResponse {
+  total_users: number;
+  active_users: number;
+  blocked_users: number;
+  verified_users: number;
+  email_verified_users: number;
+  kyc_completed_users: number;
+  two_fa_users: number;
+  admin_users: number;
+  new_today: number;
+  new_last_7_days: number;
+  new_last_30_days: number;
+  pending_deposit_requests: number;
+  users_in_period: number | null;
+}
+
 export const usersApi = createApi({
   reducerPath: "usersApi",
   baseQuery: fetchBaseQuery({
@@ -106,6 +122,10 @@ export const usersApi = createApi({
         const queryString = queryParams.toString();
         return `/account/admin/users/${queryString ? `?${queryString}` : ""}`;
       },
+      providesTags: ["Users"],
+    }),
+    getUserStats: builder.query<UserStatsResponse, void>({
+      query: () => "/account/admin/users/stats/",
       providesTags: ["Users"],
     }),
     getUserByUuid: builder.query<UserDetails, string>({
@@ -133,6 +153,7 @@ export const usersApi = createApi({
 
 export const {
   useGetUsersQuery,
+  useGetUserStatsQuery,
   useGetUserByUuidQuery,
   useCreateUserMutation,
   useUpdateUserMutation,

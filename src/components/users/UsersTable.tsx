@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   TableContainer,
@@ -14,35 +14,56 @@ import {
   useTheme,
   IconButton,
   Tooltip,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { openEditUserForm } from "@/store/actions";
 import { ChevronRightIcon, ChevronLeftIcon, EditIcon } from "@/assets/icons";
-import type { User } from "@/store/api/usersApi";
+import { useGetUsersQuery, type User } from "@/store/api/usersApi";
 
 interface UsersTableProps {
-  users?: User[];
-  totalFilteredCount: number;
-  page: number;
-  rowsPerPage: number;
-  onPageChange: (newPage: number) => void;
   onUserClick?: (user: User) => void;
 }
 
-export const UsersTable: React.FC<UsersTableProps> = ({
-  users,
-  totalFilteredCount,
-  page,
-  rowsPerPage,
-  onPageChange,
-  onUserClick,
-}) => {
+export const UsersTable: React.FC<UsersTableProps> = ({ onUserClick }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 20;
+
+  const {
+    data: usersResponse,
+    isLoading,
+    isError,
+  } = useGetUsersQuery({
+    page: page + 1,
+    page_size: rowsPerPage,
+  });
+
+  const users = usersResponse?.results || [];
+  const totalCount = usersResponse?.count || users.length;
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", p: 8 }}>
+        <CircularProgress size={48} />
+      </Box>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Alert severity="error" sx={{ borderRadius: 1 }}>
+        خطا در دریافت لیست کاربران. لطفاً اتصال سرور و توکن دسترسی را بررسی نمایید.
+      </Alert>
+    );
+  }
+
   return (
     <Card elevation={2} sx={{ overflow: "hidden" }}>
-      <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0 }}>
+      <TableContainer component={Paper} elevation={0}>
         <Table sx={{ minWidth: 800 }}>
           <TableHead sx={{ bgcolor: "action.hover" }}>
             <TableRow>
@@ -169,9 +190,9 @@ export const UsersTable: React.FC<UsersTableProps> = ({
 
       {/* Integrated Table Footer / Pagination */}
       {(() => {
-        const from = totalFilteredCount === 0 ? 0 : page * rowsPerPage + 1;
-        const to = Math.min((page + 1) * rowsPerPage, totalFilteredCount);
-        const totalPages = Math.max(1, Math.ceil(totalFilteredCount / rowsPerPage));
+        const from = totalCount === 0 ? 0 : page * rowsPerPage + 1;
+        const to = Math.min((page + 1) * rowsPerPage, totalCount);
+        const totalPages = Math.max(1, Math.ceil(totalCount / rowsPerPage));
 
         return (
           <Box
@@ -187,14 +208,14 @@ export const UsersTable: React.FC<UsersTableProps> = ({
             }}
           >
             <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-              نمایش <b>{from}</b> تا <b>{to}</b> از <b>{totalFilteredCount}</b> کاربر
+              نمایش <b>{from}</b> تا <b>{to}</b> از <b>{totalCount}</b> کاربر
             </Typography>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <IconButton
                 size="small"
                 disabled={page === 0}
-                onClick={() => onPageChange(page - 1)}
+                onClick={() => setPage(page - 1)}
                 sx={{ borderRadius: 1 }}
               >
                 <ChevronRightIcon fontSize="small" />
@@ -206,8 +227,8 @@ export const UsersTable: React.FC<UsersTableProps> = ({
 
               <IconButton
                 size="small"
-                disabled={(page + 1) * rowsPerPage >= totalFilteredCount}
-                onClick={() => onPageChange(page + 1)}
+                disabled={(page + 1) * rowsPerPage >= totalCount}
+                onClick={() => setPage(page + 1)}
                 sx={{ borderRadius: 1 }}
               >
                 <ChevronLeftIcon fontSize="small" />

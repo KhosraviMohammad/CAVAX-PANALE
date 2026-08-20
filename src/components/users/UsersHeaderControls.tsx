@@ -31,23 +31,11 @@ import {
 
 export type UserStatusFilter = "ALL" | "ACTIVE" | "ADMIN" | "VERIFIED";
 
-interface UsersHeaderControlsProps {
-  searchTerm: string;
-  onSearchChange: (value: string) => void;
-  statusFilter: UserStatusFilter;
-  onStatusFilterChange: (status: UserStatusFilter) => void;
-  onRefresh: () => void;
-}
-
-export const UsersHeaderControls: React.FC<UsersHeaderControlsProps> = ({
-  searchTerm,
-  onSearchChange,
-  statusFilter,
-  onStatusFilterChange,
-  onRefresh,
-}) => {
+export const UsersHeaderControls: React.FC = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<UserStatusFilter>("ALL");
   const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleOpenFilterMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -59,7 +47,7 @@ export const UsersHeaderControls: React.FC<UsersHeaderControlsProps> = ({
   };
 
   const handleSelectStatus = (status: UserStatusFilter) => {
-    onStatusFilterChange(status);
+    setStatusFilter(status);
     handleCloseFilterMenu();
   };
 
@@ -95,7 +83,7 @@ export const UsersHeaderControls: React.FC<UsersHeaderControlsProps> = ({
           size="small"
           placeholder="جستجوی نام، تلفن، کدملی یا ایمیل..."
           value={searchTerm}
-          onChange={(e) => onSearchChange(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
           slotProps={{
             input: {
               startAdornment: (
@@ -189,7 +177,7 @@ export const UsersHeaderControls: React.FC<UsersHeaderControlsProps> = ({
       <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
         <Tooltip title="بروزرسانی لیست کاربران">
           <IconButton
-            onClick={onRefresh}
+            onClick={() => {}}
             color="primary"
             sx={{
               borderRadius: 1,
