@@ -99,7 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         >
           <Box
             component="img"
-            src="/images/Logo1.png"
+            src="/images/Logo.png"
             alt="Logo"
             sx={{
               width: "100%",
@@ -121,7 +121,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               overflowWrap: "break-word",
             }}
           >
-            سیستم مانیتورینگ BSCADA
+            کاواکس
           </Typography>
         )}
       </Box>
