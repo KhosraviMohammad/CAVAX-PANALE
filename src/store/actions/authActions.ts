@@ -10,10 +10,12 @@ export interface SetCredentialsPayload {
 export interface SetCredentialsAction {
   type: typeof SET_CREDENTIALS;
   payload: SetCredentialsPayload;
+  [key: string]: unknown;
 }
 
 export interface LogoutAction {
   type: typeof LOGOUT;
+  [key: string]: unknown;
 }
 
 export type AuthAction = SetCredentialsAction | LogoutAction;
