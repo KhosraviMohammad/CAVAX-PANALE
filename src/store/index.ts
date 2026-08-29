@@ -10,6 +10,7 @@ import { themeReducer, headerReducer, authReducer, usersUiReducer } from "./redu
 import { sampleApi } from "./api/sampleApi";
 import { authApi } from "./api/authApi";
 import { usersApi } from "./api/usersApi";
+import { walletsApi } from "./api/walletsApi";
 
 // Combine reducers
 const rootReducer = combineReducers({
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   [sampleApi.reducerPath]: sampleApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
   [usersApi.reducerPath]: usersApi.reducer,
+  [walletsApi.reducerPath]: walletsApi.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -68,7 +70,12 @@ try {
           serializableCheck: {
             ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
           },
-        }).concat(sampleApi.middleware, authApi.middleware, usersApi.middleware),
+        }).concat(
+          sampleApi.middleware,
+          authApi.middleware,
+          usersApi.middleware,
+          walletsApi.middleware,
+        ),
     });
 
     persistor = persistStore(store, null, () => {
@@ -81,7 +88,12 @@ try {
       middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
           serializableCheck: false,
-        }).concat(sampleApi.middleware, authApi.middleware, usersApi.middleware),
+        }).concat(
+          sampleApi.middleware,
+          authApi.middleware,
+          usersApi.middleware,
+          walletsApi.middleware,
+        ),
     });
     persistor = null;
   }
@@ -94,7 +106,12 @@ try {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: false,
-      }).concat(sampleApi.middleware, authApi.middleware, usersApi.middleware),
+      }).concat(
+        sampleApi.middleware,
+        authApi.middleware,
+        usersApi.middleware,
+        walletsApi.middleware,
+      ),
   });
   persistor = null;
 } finally {

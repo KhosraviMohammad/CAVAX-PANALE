@@ -14,7 +14,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { LogoutIcon, ChevronLeftIcon, PeopleIcon } from "@/assets/icons";
-import { Assignment as SampleIcon } from "@mui/icons-material";
+import { Assignment as SampleIcon, AccountBalanceWallet as WalletIcon } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "@/store/actions";
@@ -51,6 +51,11 @@ const Sidebar: React.FC<SidebarProps> = ({
       title: "مدیریت کاربران",
       path: "/users",
       icon: <PeopleIcon />,
+    },
+    {
+      title: "مدیریت کیف پول‌ها",
+      path: "/wallets",
+      icon: <WalletIcon />,
     },
     {
       title: "صفحه نمونه",

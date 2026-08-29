@@ -7,6 +7,7 @@ import { ProtectedRoute, PublicOnlyRoute } from "@/components/common/AuthGuard";
 const SamplePage = lazy(() => import("@/pages/SamplePage"));
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const UsersPage = lazy(() => import("@/pages/UsersPage"));
+const WalletsPage = lazy(() => import("@/pages/WalletsPage"));
 
 const PageLoader = () => (
   <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 400 }}>
@@ -51,6 +52,7 @@ function App() {
             <Route path="/" element={<DashboardLayout />}>
               <Route index element={<UsersPage />} />
               <Route path="users" element={<UsersPage />} />
+              <Route path="wallets" element={<WalletsPage />} />
               <Route path="sample" element={<SamplePage />} />
               <Route path="samples" element={<SamplePage />} />
             </Route>
