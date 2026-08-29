@@ -12,6 +12,7 @@ import { authApi } from "./api/authApi";
 import { usersApi } from "./api/usersApi";
 import { walletsApi } from "./api/walletsApi";
 import { transactionsApi } from "./api/transactionsApi";
+import { entriesApi } from "./api/entriesApi";
 
 // Combine reducers
 const rootReducer = combineReducers({
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   [usersApi.reducerPath]: usersApi.reducer,
   [walletsApi.reducerPath]: walletsApi.reducer,
   [transactionsApi.reducerPath]: transactionsApi.reducer,
+  [entriesApi.reducerPath]: entriesApi.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -78,6 +80,7 @@ try {
           usersApi.middleware,
           walletsApi.middleware,
           transactionsApi.middleware,
+          entriesApi.middleware,
         ),
     });
 
@@ -97,6 +100,7 @@ try {
           usersApi.middleware,
           walletsApi.middleware,
           transactionsApi.middleware,
+          entriesApi.middleware,
         ),
     });
     persistor = null;
@@ -116,6 +120,7 @@ try {
         usersApi.middleware,
         walletsApi.middleware,
         transactionsApi.middleware,
+        entriesApi.middleware,
       ),
   });
   persistor = null;

@@ -9,6 +9,7 @@ const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const UsersPage = lazy(() => import("@/pages/UsersPage"));
 const WalletsPage = lazy(() => import("@/pages/WalletsPage"));
 const TransactionsPage = lazy(() => import("@/pages/TransactionsPage"));
+const EntriesPage = lazy(() => import("@/pages/EntriesPage"));
 
 const PageLoader = () => (
   <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 400 }}>
@@ -55,6 +56,7 @@ function App() {
               <Route path="users" element={<UsersPage />} />
               <Route path="wallets" element={<WalletsPage />} />
               <Route path="transactions" element={<TransactionsPage />} />
+              <Route path="entries" element={<EntriesPage />} />
               <Route path="sample" element={<SamplePage />} />
               <Route path="samples" element={<SamplePage />} />
             </Route>
