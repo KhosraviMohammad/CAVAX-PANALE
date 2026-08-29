@@ -91,8 +91,7 @@ export const RejectDepositDialog: React.FC<RejectDepositDialogProps> = ({
                 <Typography
                   variant="caption"
                   color="text.secondary"
-                  display="block"
-                  sx={{ mt: 0.5 }}
+                  sx={{ display: "block", mt: 0.5 }}
                 >
                   حساب مبدأ: {request.bank_account.bank_name} ({request.bank_account.account_holder}
                   )

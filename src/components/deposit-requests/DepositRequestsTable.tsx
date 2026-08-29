@@ -224,7 +224,11 @@ export const DepositRequestsTable: React.FC = () => {
                           {bankText || "-"}
                         </Typography>
                         {cardText && (
-                          <Typography variant="caption" color="text.secondary" display="block">
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            sx={{ display: "block" }}
+                          >
                             {cardText}
                           </Typography>
                         )}
