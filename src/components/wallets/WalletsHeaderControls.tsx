@@ -26,22 +26,10 @@ import {
 
 export type WalletStatusFilter = "ALL" | "FROZEN" | "ACTIVE";
 
-interface WalletsHeaderControlsProps {
-  searchTerm: string;
-  onSearchChange: (val: string) => void;
-  statusFilter: WalletStatusFilter;
-  onStatusFilterChange: (status: WalletStatusFilter) => void;
-  onRefresh?: () => void;
-}
-
-export const WalletsHeaderControls: React.FC<WalletsHeaderControlsProps> = ({
-  searchTerm,
-  onSearchChange,
-  statusFilter,
-  onStatusFilterChange,
-  onRefresh,
-}) => {
+export const WalletsHeaderControls: React.FC = () => {
   const theme = useTheme();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<WalletStatusFilter>("ALL");
   const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleOpenFilterMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -53,7 +41,7 @@ export const WalletsHeaderControls: React.FC<WalletsHeaderControlsProps> = ({
   };
 
   const handleSelectStatus = (status: WalletStatusFilter) => {
-    onStatusFilterChange(status);
+    setStatusFilter(status);
     handleCloseFilterMenu();
   };
 
@@ -88,7 +76,7 @@ export const WalletsHeaderControls: React.FC<WalletsHeaderControlsProps> = ({
           size="small"
           placeholder="جستجوی کاربر یا کد ارز..."
           value={searchTerm}
-          onChange={(e) => onSearchChange(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
           slotProps={{
             input: {
               startAdornment: (
@@ -182,7 +170,7 @@ export const WalletsHeaderControls: React.FC<WalletsHeaderControlsProps> = ({
       <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
         <Tooltip title="بروزرسانی لیست کیف پول‌ها">
           <IconButton
-            onClick={onRefresh}
+            onClick={() => {}}
             color="primary"
             sx={{
               borderRadius: 1,

@@ -20,14 +20,7 @@ import {
 import { AcUnit as FreezeIcon, LockOpen as UnfreezeIcon } from "@mui/icons-material";
 import { ChevronRightIcon, ChevronLeftIcon } from "@/assets/icons";
 import { useGetWalletsQuery, type Wallet } from "@/store/api/walletsApi";
-import type { WalletStatusFilter } from "./WalletsHeaderControls";
 import { FreezeWalletDialog } from "./FreezeWalletDialog";
-
-interface WalletsTableProps {
-  searchTerm?: string;
-  statusFilter?: WalletStatusFilter;
-  refetchTrigger?: number;
-}
 
 const formatBalance = (val: string | number) => {
   if (val === undefined || val === null || val === "") return "0";
@@ -52,11 +45,7 @@ const formatDate = (dateStr?: string) => {
   }
 };
 
-export const WalletsTable: React.FC<WalletsTableProps> = ({
-  searchTerm = "",
-  statusFilter = "ALL",
-  refetchTrigger,
-}) => {
+export const WalletsTable: React.FC = () => {
   const theme = useTheme();
   const [page, setPage] = useState(0);
   const rowsPerPage = 20;
@@ -74,25 +63,10 @@ export const WalletsTable: React.FC<WalletsTableProps> = ({
   } = useGetWalletsQuery({
     page: page + 1,
     page_size: rowsPerPage,
-    search: searchTerm || undefined,
   });
 
-  React.useEffect(() => {
-    if (refetchTrigger) {
-      refetch();
-    }
-  }, [refetchTrigger, refetch]);
-
-  const rawWallets = walletsResponse?.results || [];
-
-  // Filter in-memory if status filter is set
-  const wallets = rawWallets.filter((w) => {
-    if (statusFilter === "FROZEN") return w.is_frozen;
-    if (statusFilter === "ACTIVE") return !w.is_frozen;
-    return true;
-  });
-
-  const totalCount = walletsResponse?.count || rawWallets.length;
+  const wallets = walletsResponse?.results || [];
+  const totalCount = walletsResponse?.count || wallets.length;
 
   const handleOpenDialog = (wallet: Wallet, mode: "freeze" | "unfreeze") => {
     setSelectedWallet(wallet);

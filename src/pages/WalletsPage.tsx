@@ -1,19 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Box } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setHeaderInfo } from "@/store/actions";
 import { WalletsKpiCards } from "@/components/wallets/WalletsKpiCards";
-import {
-  WalletsHeaderControls,
-  type WalletStatusFilter,
-} from "@/components/wallets/WalletsHeaderControls";
+import { WalletsHeaderControls } from "@/components/wallets/WalletsHeaderControls";
 import { WalletsTable } from "@/components/wallets/WalletsTable";
 
 const WalletsPage: React.FC = () => {
   const dispatch = useDispatch();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<WalletStatusFilter>("ALL");
-  const [refetchKey, setRefetchKey] = useState(0);
 
   useEffect(() => {
     dispatch(
@@ -30,20 +24,10 @@ const WalletsPage: React.FC = () => {
       <WalletsKpiCards />
 
       {/* 2. Control Panel Header */}
-      <WalletsHeaderControls
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        statusFilter={statusFilter}
-        onStatusFilterChange={setStatusFilter}
-        onRefresh={() => setRefetchKey((prev) => prev + 1)}
-      />
+      <WalletsHeaderControls />
 
       {/* 3. Main Wallets Content (Table View) */}
-      <WalletsTable
-        searchTerm={searchTerm}
-        statusFilter={statusFilter}
-        refetchTrigger={refetchKey}
-      />
+      <WalletsTable />
     </Box>
   );
 };

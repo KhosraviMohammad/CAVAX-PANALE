@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Card,
   TableContainer,
@@ -18,14 +18,6 @@ import {
 } from "@mui/material";
 import { ChevronRightIcon, ChevronLeftIcon } from "@/assets/icons";
 import { useGetEntriesQuery, type LedgerEntry } from "@/store/api/entriesApi";
-import type { EntryDirectionFilter } from "./EntriesHeaderControls";
-
-interface EntriesTableProps {
-  searchTerm?: string;
-  directionFilter?: EntryDirectionFilter;
-  minAmount?: string;
-  refetchTrigger?: number;
-}
 
 const formatAmount = (val?: string | number) => {
   if (val === undefined || val === null || val === "") return "0";
@@ -51,12 +43,7 @@ const formatDate = (dateStr?: string) => {
   }
 };
 
-export const EntriesTable: React.FC<EntriesTableProps> = ({
-  searchTerm = "",
-  directionFilter = "ALL",
-  minAmount = "",
-  refetchTrigger,
-}) => {
+export const EntriesTable: React.FC = () => {
   const theme = useTheme();
   const [page, setPage] = useState(0);
   const rowsPerPage = 20;
@@ -69,16 +56,7 @@ export const EntriesTable: React.FC<EntriesTableProps> = ({
   } = useGetEntriesQuery({
     page: page + 1,
     page_size: rowsPerPage,
-    search: searchTerm || undefined,
-    direction: directionFilter !== "ALL" ? directionFilter : undefined,
-    min_amount: minAmount || undefined,
   });
-
-  useEffect(() => {
-    if (refetchTrigger) {
-      refetch();
-    }
-  }, [refetchTrigger, refetch]);
 
   const entries = entriesResponse?.results || [];
   const totalCount = entriesResponse?.count || entries.length;

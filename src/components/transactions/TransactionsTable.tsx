@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Card,
   TableContainer,
@@ -18,14 +18,6 @@ import {
 } from "@mui/material";
 import { ChevronRightIcon, ChevronLeftIcon } from "@/assets/icons";
 import { useGetTransactionsQuery, type Transaction } from "@/store/api/transactionsApi";
-import type { TransactionTypeFilter, TransactionStatusFilter } from "./TransactionsHeaderControls";
-
-interface TransactionsTableProps {
-  searchTerm?: string;
-  typeFilter?: TransactionTypeFilter;
-  statusFilter?: TransactionStatusFilter;
-  refetchTrigger?: number;
-}
 
 const formatDate = (dateStr?: string) => {
   if (!dateStr) return "-";
@@ -79,12 +71,7 @@ const getStatusChipColor = (status?: string): "success" | "warning" | "error" | 
   }
 };
 
-export const TransactionsTable: React.FC<TransactionsTableProps> = ({
-  searchTerm = "",
-  typeFilter = "ALL",
-  statusFilter = "ALL",
-  refetchTrigger,
-}) => {
+export const TransactionsTable: React.FC = () => {
   const theme = useTheme();
   const [page, setPage] = useState(0);
   const rowsPerPage = 20;
@@ -97,16 +84,7 @@ export const TransactionsTable: React.FC<TransactionsTableProps> = ({
   } = useGetTransactionsQuery({
     page: page + 1,
     page_size: rowsPerPage,
-    search: searchTerm || undefined,
-    transaction_type: typeFilter !== "ALL" ? typeFilter : undefined,
-    status: statusFilter !== "ALL" ? statusFilter : undefined,
   });
-
-  useEffect(() => {
-    if (refetchTrigger) {
-      refetch();
-    }
-  }, [refetchTrigger, refetch]);
 
   const transactions = txResponse?.results || [];
   const totalCount = txResponse?.count || transactions.length;

@@ -27,26 +27,12 @@ import {
 export type TransactionTypeFilter = "ALL" | "deposit" | "convert" | "fee" | "block" | "adjustment";
 export type TransactionStatusFilter = "ALL" | "pending" | "completed" | "failed";
 
-interface TransactionsHeaderControlsProps {
-  searchTerm: string;
-  onSearchChange: (val: string) => void;
-  typeFilter: TransactionTypeFilter;
-  onTypeFilterChange: (type: TransactionTypeFilter) => void;
-  statusFilter: TransactionStatusFilter;
-  onStatusFilterChange: (status: TransactionStatusFilter) => void;
-  onRefresh?: () => void;
-}
-
-export const TransactionsHeaderControls: React.FC<TransactionsHeaderControlsProps> = ({
-  searchTerm,
-  onSearchChange,
-  typeFilter,
-  onTypeFilterChange,
-  statusFilter,
-  onStatusFilterChange,
-  onRefresh,
-}) => {
+export const TransactionsHeaderControls: React.FC = () => {
   const theme = useTheme();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [typeFilter, setTypeFilter] = useState<TransactionTypeFilter>("ALL");
+  const [statusFilter, setStatusFilter] = useState<TransactionStatusFilter>("ALL");
+
   const [typeAnchorEl, setTypeAnchorEl] = useState<null | HTMLElement>(null);
   const [statusAnchorEl, setStatusAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -91,7 +77,7 @@ export const TransactionsHeaderControls: React.FC<TransactionsHeaderControlsProp
           size="small"
           placeholder="جستجوی توضیحات یا منبع..."
           value={searchTerm}
-          onChange={(e) => onSearchChange(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
           slotProps={{
             input: {
               startAdornment: (
@@ -152,7 +138,7 @@ export const TransactionsHeaderControls: React.FC<TransactionsHeaderControlsProp
               key={t}
               selected={typeFilter === t}
               onClick={() => {
-                onTypeFilterChange(t);
+                setTypeFilter(t);
                 setTypeAnchorEl(null);
               }}
               sx={{ borderRadius: 1, my: 0.2 }}
@@ -205,7 +191,7 @@ export const TransactionsHeaderControls: React.FC<TransactionsHeaderControlsProp
               key={s}
               selected={statusFilter === s}
               onClick={() => {
-                onStatusFilterChange(s);
+                setStatusFilter(s);
                 setStatusAnchorEl(null);
               }}
               sx={{ borderRadius: 1, my: 0.2 }}
@@ -223,7 +209,7 @@ export const TransactionsHeaderControls: React.FC<TransactionsHeaderControlsProp
             color="primary"
             variant="outlined"
             size="small"
-            onDelete={() => onTypeFilterChange("ALL")}
+            onDelete={() => setTypeFilter("ALL")}
             deleteIcon={<CloseIcon fontSize="small" />}
             sx={{ fontWeight: 600, borderRadius: 1 }}
           />
@@ -234,7 +220,7 @@ export const TransactionsHeaderControls: React.FC<TransactionsHeaderControlsProp
             color="secondary"
             variant="outlined"
             size="small"
-            onDelete={() => onStatusFilterChange("ALL")}
+            onDelete={() => setStatusFilter("ALL")}
             deleteIcon={<CloseIcon fontSize="small" />}
             sx={{ fontWeight: 600, borderRadius: 1 }}
           />
@@ -245,7 +231,7 @@ export const TransactionsHeaderControls: React.FC<TransactionsHeaderControlsProp
       <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
         <Tooltip title="بروزرسانی لیست تراکنش‌ها">
           <IconButton
-            onClick={onRefresh}
+            onClick={() => {}}
             color="primary"
             sx={{
               borderRadius: 1,

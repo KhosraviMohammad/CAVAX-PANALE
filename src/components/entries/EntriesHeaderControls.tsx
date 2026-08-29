@@ -26,26 +26,12 @@ import {
 
 export type EntryDirectionFilter = "ALL" | "debit" | "credit";
 
-interface EntriesHeaderControlsProps {
-  searchTerm: string;
-  onSearchChange: (val: string) => void;
-  directionFilter: EntryDirectionFilter;
-  onDirectionFilterChange: (dir: EntryDirectionFilter) => void;
-  minAmount: string;
-  onMinAmountChange: (val: string) => void;
-  onRefresh?: () => void;
-}
-
-export const EntriesHeaderControls: React.FC<EntriesHeaderControlsProps> = ({
-  searchTerm,
-  onSearchChange,
-  directionFilter,
-  onDirectionFilterChange,
-  minAmount,
-  onMinAmountChange,
-  onRefresh,
-}) => {
+export const EntriesHeaderControls: React.FC = () => {
   const theme = useTheme();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [directionFilter, setDirectionFilter] = useState<EntryDirectionFilter>("ALL");
+  const [minAmount, setMinAmount] = useState("");
+
   const [directionAnchorEl, setDirectionAnchorEl] = useState<null | HTMLElement>(null);
 
   const directionLabels: Record<EntryDirectionFilter, string> = {
@@ -79,7 +65,7 @@ export const EntriesHeaderControls: React.FC<EntriesHeaderControlsProps> = ({
           size="small"
           placeholder="جستجوی کاربر، ارز یا نوع..."
           value={searchTerm}
-          onChange={(e) => onSearchChange(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
           slotProps={{
             input: {
               startAdornment: (
@@ -104,7 +90,7 @@ export const EntriesHeaderControls: React.FC<EntriesHeaderControlsProps> = ({
           type="number"
           placeholder="حداقل مبلغ (min_amount)"
           value={minAmount}
-          onChange={(e) => onMinAmountChange(e.target.value)}
+          onChange={(e) => setMinAmount(e.target.value)}
           sx={{
             width: { xs: "100%", sm: 200 },
             "& .MuiOutlinedInput-root": {
@@ -156,7 +142,7 @@ export const EntriesHeaderControls: React.FC<EntriesHeaderControlsProps> = ({
               key={dir}
               selected={directionFilter === dir}
               onClick={() => {
-                onDirectionFilterChange(dir);
+                setDirectionFilter(dir);
                 setDirectionAnchorEl(null);
               }}
               sx={{ borderRadius: 1, my: 0.2 }}
@@ -174,7 +160,7 @@ export const EntriesHeaderControls: React.FC<EntriesHeaderControlsProps> = ({
             color="primary"
             variant="outlined"
             size="small"
-            onDelete={() => onDirectionFilterChange("ALL")}
+            onDelete={() => setDirectionFilter("ALL")}
             deleteIcon={<CloseIcon fontSize="small" />}
             sx={{ fontWeight: 600, borderRadius: 1 }}
           />
@@ -185,7 +171,7 @@ export const EntriesHeaderControls: React.FC<EntriesHeaderControlsProps> = ({
             color="secondary"
             variant="outlined"
             size="small"
-            onDelete={() => onMinAmountChange("")}
+            onDelete={() => setMinAmount("")}
             deleteIcon={<CloseIcon fontSize="small" />}
             sx={{ fontWeight: 600, borderRadius: 1 }}
           />
@@ -196,7 +182,7 @@ export const EntriesHeaderControls: React.FC<EntriesHeaderControlsProps> = ({
       <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
         <Tooltip title="بروزرسانی لیست اسناد دفتر کل">
           <IconButton
-            onClick={onRefresh}
+            onClick={() => {}}
             color="primary"
             sx={{
               borderRadius: 1,
