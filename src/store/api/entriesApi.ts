@@ -1,5 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { RootState } from "../types";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithLogout } from "./baseQuery";
 
 export interface LedgerEntry {
   uuid: string;
@@ -36,16 +36,7 @@ export interface GetEntriesParams {
 
 export const entriesApi = createApi({
   reducerPath: "entriesApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://65.109.184.38:8080",
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth?.access;
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithLogout,
   tagTypes: ["Entries"],
   endpoints: (builder) => ({
     getEntries: builder.query<EntriesResponse, GetEntriesParams | void>({

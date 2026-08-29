@@ -1,4 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithLogout } from "./baseQuery";
 
 export interface LoginRequest {
   username: string;
@@ -19,9 +20,7 @@ export interface LoginResponse {
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://65.109.184.38:8080",
-  }),
+  baseQuery: baseQueryWithLogout,
   endpoints: (builder) => ({
     adminLogin: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({

@@ -1,5 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { RootState } from "../types";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithLogout } from "./baseQuery";
 
 export interface BankAccount {
   uuid: string;
@@ -47,16 +47,7 @@ export interface RejectDepositInput {
 
 export const depositRequestsApi = createApi({
   reducerPath: "depositRequestsApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://65.109.184.38:8080",
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth?.access;
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithLogout,
   tagTypes: ["DepositRequests"],
   endpoints: (builder) => ({
     getDepositRequests: builder.query<

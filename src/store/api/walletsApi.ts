@@ -1,5 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { RootState } from "../types";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithLogout } from "./baseQuery";
 
 export interface WalletUser {
   uuid: string;
@@ -48,16 +48,7 @@ export interface UnfreezeWalletInput {
 
 export const walletsApi = createApi({
   reducerPath: "walletsApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://65.109.184.38:8080",
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth?.access;
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithLogout,
   tagTypes: ["Wallets"],
   endpoints: (builder) => ({
     getWallets: builder.query<WalletsResponse, GetWalletsParams | void>({
