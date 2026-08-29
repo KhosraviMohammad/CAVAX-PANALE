@@ -19,6 +19,7 @@ import {
   AccountBalanceWallet as WalletIcon,
   ReceiptLong as TxIcon,
   MenuBook as EntryIcon,
+  Payments as DepositIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -71,6 +72,11 @@ const Sidebar: React.FC<SidebarProps> = ({
       title: "اسناد دفتر کل",
       path: "/entries",
       icon: <EntryIcon />,
+    },
+    {
+      title: "درخواست‌های واریز",
+      path: "/deposit-requests",
+      icon: <DepositIcon />,
     },
     {
       title: "صفحه نمونه",
