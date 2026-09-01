@@ -51,6 +51,15 @@ export interface UnfreezeWalletInput {
   reason?: string;
 }
 
+export type AdjustmentDirection = "credit" | "debit";
+
+export interface AdjustWalletInput {
+  uuid: string;
+  direction: AdjustmentDirection;
+  amount: string;
+  reason: string;
+}
+
 export const walletsApi = createApi({
   reducerPath: "walletsApi",
   baseQuery: baseQueryWithLogout,
@@ -99,8 +108,20 @@ export const walletsApi = createApi({
       }),
       invalidatesTags: ["Wallets"],
     }),
+    adjustWallet: builder.mutation<Wallet, AdjustWalletInput>({
+      query: ({ uuid, direction, amount, reason }) => ({
+        url: `/ledger/admin/wallets/${uuid}/adjust/`,
+        method: "POST",
+        body: { direction, amount, reason },
+      }),
+      invalidatesTags: ["Wallets"],
+    }),
   }),
 });
 
-export const { useGetWalletsQuery, useFreezeWalletMutation, useUnfreezeWalletMutation } =
-  walletsApi;
+export const {
+  useGetWalletsQuery,
+  useFreezeWalletMutation,
+  useUnfreezeWalletMutation,
+  useAdjustWalletMutation,
+} = walletsApi;

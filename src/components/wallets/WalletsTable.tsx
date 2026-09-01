@@ -18,10 +18,15 @@ import {
   Alert,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import { AcUnit as FreezeIcon, LockOpen as UnfreezeIcon } from "@mui/icons-material";
+import {
+  AcUnit as FreezeIcon,
+  LockOpen as UnfreezeIcon,
+  Tune as AdjustIcon,
+} from "@mui/icons-material";
 import { ChevronRightIcon, ChevronLeftIcon } from "@/assets/icons";
 import { useGetWalletsQuery, type Wallet } from "@/store/api/walletsApi";
 import { FreezeWalletDialog } from "./FreezeWalletDialog";
+import { AdjustWalletDialog } from "./AdjustWalletDialog";
 import { type WalletFilterValues } from "./WalletsFilterDialog";
 import {
   selectWalletsSearchTerm,
@@ -73,6 +78,10 @@ export const WalletsTable: React.FC<WalletsTableProps> = ({ searchTerm, filters 
   const [dialogMode, setDialogMode] = useState<"freeze" | "unfreeze">("freeze");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  // Adjust Wallet Dialog State
+  const [adjustWalletItem, setAdjustWalletItem] = useState<Wallet | null>(null);
+  const [isAdjustDialogOpen, setIsAdjustDialogOpen] = useState(false);
+
   const {
     data: walletsResponse,
     isLoading,
@@ -101,6 +110,16 @@ export const WalletsTable: React.FC<WalletsTableProps> = ({ searchTerm, filters 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
     setSelectedWallet(null);
+  };
+
+  const handleOpenAdjustDialog = (wallet: Wallet) => {
+    setAdjustWalletItem(wallet);
+    setIsAdjustDialogOpen(true);
+  };
+
+  const handleCloseAdjustDialog = () => {
+    setIsAdjustDialogOpen(false);
+    setAdjustWalletItem(null);
   };
 
   if (isLoading) {
@@ -230,29 +249,42 @@ export const WalletsTable: React.FC<WalletsTableProps> = ({ searchTerm, filters 
 
                       {/* Actions */}
                       <TableCell align="center">
-                        {wallet.is_frozen ? (
-                          <Tooltip title="رفع مسدودسازی (آن‌فریز)">
+                        <Box sx={{ display: "flex", justifyContent: "center", gap: 0.5 }}>
+                          <Tooltip title="تعدیل دستی موجودی (افزایش / کاهش)">
                             <IconButton
-                              color="success"
+                              color="primary"
                               size="small"
-                              onClick={() => handleOpenDialog(wallet, "unfreeze")}
+                              onClick={() => handleOpenAdjustDialog(wallet)}
                               sx={{ borderRadius: 1 }}
                             >
-                              <UnfreezeIcon fontSize="small" />
+                              <AdjustIcon fontSize="small" />
                             </IconButton>
                           </Tooltip>
-                        ) : (
-                          <Tooltip title="مسدودسازی (فریز)">
-                            <IconButton
-                              color="error"
-                              size="small"
-                              onClick={() => handleOpenDialog(wallet, "freeze")}
-                              sx={{ borderRadius: 1 }}
-                            >
-                              <FreezeIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        )}
+
+                          {wallet.is_frozen ? (
+                            <Tooltip title="رفع مسدودسازی (آن‌فریز)">
+                              <IconButton
+                                color="success"
+                                size="small"
+                                onClick={() => handleOpenDialog(wallet, "unfreeze")}
+                                sx={{ borderRadius: 1 }}
+                              >
+                                <UnfreezeIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          ) : (
+                            <Tooltip title="مسدودسازی (فریز)">
+                              <IconButton
+                                color="error"
+                                size="small"
+                                onClick={() => handleOpenDialog(wallet, "freeze")}
+                                sx={{ borderRadius: 1 }}
+                              >
+                                <FreezeIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          )}
+                        </Box>
                       </TableCell>
                     </TableRow>
                   );
@@ -325,6 +357,13 @@ export const WalletsTable: React.FC<WalletsTableProps> = ({ searchTerm, filters 
         wallet={selectedWallet}
         mode={dialogMode}
         onClose={handleCloseDialog}
+      />
+
+      {/* Adjust Wallet Balance Dialog */}
+      <AdjustWalletDialog
+        open={isAdjustDialogOpen}
+        wallet={adjustWalletItem}
+        onClose={handleCloseAdjustDialog}
       />
     </>
   );
