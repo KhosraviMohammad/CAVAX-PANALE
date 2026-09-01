@@ -152,7 +152,13 @@ export const MaterialUIProvider = ({ children }: MaterialUIProviderProps) => {
                   ? theme.palette.background.default
                   : alpha(theme.palette.common.white, 0.04),
               color: theme.palette.text.primary,
+              "&.MuiInputBase-sizeSmall": {
+                borderRadius: 10,
+              },
             }),
+            sizeSmall: {
+              borderRadius: 10,
+            },
           },
         },
         MuiButton: {
