@@ -1,10 +1,5 @@
 import React, { useEffect } from "react";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
   TextField,
   Grid,
   FormControl,
@@ -16,12 +11,13 @@ import {
   CircularProgress,
   FormHelperText,
   Box,
-  IconButton,
 } from "@mui/material";
+import { PersonAdd as UserIcon } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
+import { ActionDialog } from "@/components/common/ActionDialog";
 import { selectIsUserFormOpen, selectEditingUserUuid } from "@/store/selectors";
 import { closeUserForm } from "@/store/actions";
 import {
@@ -30,7 +26,6 @@ import {
   useGetUserByUuidQuery,
 } from "@/store/api/usersApi";
 import { createUserSchema, type CreateUserFormData, zodResolver } from "@/schemas/userSchemas";
-import { CloseIcon } from "@/assets/icons";
 
 export const UserFormDialog: React.FC = () => {
   const dispatch = useDispatch();
@@ -165,188 +160,167 @@ export const UserFormDialog: React.FC = () => {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle
-        sx={{
-          fontWeight: "bold",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <span>{isEditMode ? "ویرایش کاربر" : "افزودن کاربر جدید"}</span>
-        <IconButton onClick={handleClose} size="small" aria-label="close">
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
+    <ActionDialog
+      open={open}
+      onClose={handleClose}
+      title={isEditMode ? "ویرایش کاربر" : "افزودن کاربر جدید"}
+      icon={<UserIcon fontSize="small" />}
+      submitText={isEditMode ? "ذخیره تغییرات" : "ثبت کاربر"}
+      submitColor="primary"
+      isLoading={isLoadingSubmit}
+      onSubmit={handleSubmit(handleFormSubmit)}
+      maxWidth="md"
+    >
+      {isEditMode && isLoadingDetails ? (
+        <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+          <CircularProgress size={36} />
+        </Box>
+      ) : (
+        <Grid container spacing={2}>
+          {/* Username */}
+          <Grid size={{ xs: 12 }}>
+            <TextField
+              fullWidth
+              label="نام کاربری"
+              {...register("username")}
+              error={!!errors.username}
+              helperText={errors.username?.message}
+            />
+          </Grid>
 
-      <form onSubmit={handleSubmit(handleFormSubmit)} noValidate>
-        <DialogContent dividers>
-          {isEditMode && isLoadingDetails ? (
-            <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-              <CircularProgress size={36} />
-            </Box>
-          ) : (
-            <Grid container spacing={2}>
-              {/* Username */}
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  fullWidth
-                  label="نام کاربری"
-                  {...register("username")}
-                  error={!!errors.username}
-                  helperText={errors.username?.message}
-                />
-              </Grid>
+          {/* First Name */}
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              label="نام"
+              {...register("first_name")}
+              error={!!errors.first_name}
+              helperText={errors.first_name?.message}
+            />
+          </Grid>
 
-              {/* First Name */}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  label="نام"
-                  {...register("first_name")}
-                  error={!!errors.first_name}
-                  helperText={errors.first_name?.message}
-                />
-              </Grid>
+          {/* Last Name */}
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              label="نام خانوادگی"
+              {...register("last_name")}
+              error={!!errors.last_name}
+              helperText={errors.last_name?.message}
+            />
+          </Grid>
 
-              {/* Last Name */}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  label="نام خانوادگی"
-                  {...register("last_name")}
-                  error={!!errors.last_name}
-                  helperText={errors.last_name?.message}
-                />
-              </Grid>
-              {/* Phone Number */}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  label="شماره تلفن"
-                  {...register("phone_number")}
-                  error={!!errors.phone_number}
-                  helperText={errors.phone_number?.message}
-                />
-              </Grid>
-              {/* National Code */}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  label="کد ملی"
-                  {...register("national_code")}
-                  error={!!errors.national_code}
-                  helperText={errors.national_code?.message}
-                />
-              </Grid>
+          {/* Phone Number */}
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              label="شماره تلفن"
+              {...register("phone_number")}
+              error={!!errors.phone_number}
+              helperText={errors.phone_number?.message}
+            />
+          </Grid>
 
-              {/* Email */}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  type="email"
-                  label="ایمیل"
-                  {...register("email")}
-                  error={!!errors.email}
-                  helperText={errors.email?.message}
-                />
-              </Grid>
+          {/* National Code */}
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              label="کد ملی"
+              {...register("national_code")}
+              error={!!errors.national_code}
+              helperText={errors.national_code?.message}
+            />
+          </Grid>
 
-              {/* Gender Select */}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Controller
-                  name="gender"
-                  control={control}
-                  render={({ field }) => (
-                    <FormControl fullWidth error={!!errors.gender}>
-                      <InputLabel id="gender-select-label">جنسیت</InputLabel>
-                      <Select {...field} labelId="gender-select-label" label="جنسیت">
-                        <MenuItem value="male">مرد</MenuItem>
-                        <MenuItem value="female">زن</MenuItem>
-                      </Select>
-                      {errors.gender && <FormHelperText>{errors.gender.message}</FormHelperText>}
-                    </FormControl>
-                  )}
-                />
-              </Grid>
+          {/* Email */}
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              type="email"
+              label="ایمیل"
+              {...register("email")}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+            />
+          </Grid>
 
-              {/* Switch Toggle Options */}
-              <Grid size={{ xs: 12, sm: 4 }}>
-                <Controller
-                  name="is_active"
-                  control={control}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={field.value}
-                          onChange={(e) => field.onChange(e.target.checked)}
-                          color="primary"
-                        />
-                      }
-                      label="حساب فعال باشد"
+          {/* Gender Select */}
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Controller
+              name="gender"
+              control={control}
+              render={({ field }) => (
+                <FormControl fullWidth error={!!errors.gender}>
+                  <InputLabel id="gender-select-label">جنسیت</InputLabel>
+                  <Select {...field} labelId="gender-select-label" label="جنسیت">
+                    <MenuItem value="male">مرد</MenuItem>
+                    <MenuItem value="female">زن</MenuItem>
+                  </Select>
+                  {errors.gender && <FormHelperText>{errors.gender.message}</FormHelperText>}
+                </FormControl>
+              )}
+            />
+          </Grid>
+
+          {/* Switch Toggle Options */}
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <Controller
+              name="is_active"
+              control={control}
+              render={({ field }) => (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                      color="primary"
                     />
-                  )}
+                  }
+                  label="حساب فعال باشد"
                 />
-              </Grid>
+              )}
+            />
+          </Grid>
 
-              <Grid size={{ xs: 12, sm: 4 }}>
-                <Controller
-                  name="verified"
-                  control={control}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={field.value}
-                          onChange={(e) => field.onChange(e.target.checked)}
-                          color="primary"
-                        />
-                      }
-                      label="احراز هویت شده"
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <Controller
+              name="verified"
+              control={control}
+              render={({ field }) => (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                      color="primary"
                     />
-                  )}
+                  }
+                  label="احراز هویت شده"
                 />
-              </Grid>
+              )}
+            />
+          </Grid>
 
-              <Grid size={{ xs: 12, sm: 4 }}>
-                <Controller
-                  name="is_admin"
-                  control={control}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={field.value}
-                          onChange={(e) => field.onChange(e.target.checked)}
-                          color="primary"
-                        />
-                      }
-                      label="دسترسی مدیر"
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <Controller
+              name="is_admin"
+              control={control}
+              render={({ field }) => (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                      color="primary"
                     />
-                  )}
+                  }
+                  label="دسترسی مدیر"
                 />
-              </Grid>
-            </Grid>
-          )}
-        </DialogContent>
-
-        <DialogActions sx={{ p: 2 }}>
-          <Button onClick={handleClose} disabled={isLoadingSubmit}>
-            انصراف
-          </Button>
-          <Button type="submit" variant="contained" color="primary" disabled={isLoadingSubmit}>
-            {isLoadingSubmit ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : isEditMode ? (
-              "ذخیره تغییرات"
-            ) : (
-              "ثبت کاربر"
-            )}
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+              )}
+            />
+          </Grid>
+        </Grid>
+      )}
+    </ActionDialog>
   );
 };
