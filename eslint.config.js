@@ -19,8 +19,15 @@ export default defineConfig([
       globals: globals.browser,
     },
     rules: {
-      "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": "off",
+      "no-unused-vars": "off",
+      "react-hooks/set-state-in-effect": "off",
+      "react-refresh/only-export-components": [
+        "warn",
+        {
+          allowConstantExport: true,
+        },
+      ],
     },
   },
 ]);
