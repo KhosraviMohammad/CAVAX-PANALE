@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Paper,
   Box,
@@ -7,181 +7,260 @@ import {
   IconButton,
   Tooltip,
   Badge,
-  Menu,
-  MenuItem,
-  Typography,
-  Divider,
-  ListItemText,
   Chip,
+  Button,
   useTheme,
   alpha,
 } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { SearchIcon, FilterListIcon as FilterIcon, CloseIcon, RefreshIcon } from "@/assets/icons";
+import { WalletsFilterDialog, type WalletFilterValues } from "./WalletsFilterDialog";
 import {
-  SearchIcon,
-  FilterListIcon as FilterIcon,
-  CheckIcon,
-  CloseIcon,
-  RefreshIcon,
-} from "@/assets/icons";
+  selectWalletsSearchTerm,
+  selectWalletsFilters,
+  selectHasActiveWalletsFilters,
+} from "@/store/selectors/walletsUiSelectors";
+import {
+  setWalletsSearchTerm,
+  setWalletsFilters,
+  resetWalletsFilters,
+  openWalletsFilterDialog,
+} from "@/store/actions/walletsUiActions";
 
-export type WalletStatusFilter = "ALL" | "FROZEN" | "ACTIVE";
+interface WalletsHeaderControlsProps {
+  searchTerm?: string;
+  onSearchChange?: (term: string) => void;
+  filters?: WalletFilterValues;
+  onFilterChange?: (newFilters: WalletFilterValues) => void;
+  onRefresh?: () => void;
+}
 
-export const WalletsHeaderControls: React.FC = () => {
+export const WalletsHeaderControls: React.FC<WalletsHeaderControlsProps> = ({
+  searchTerm,
+  onSearchChange,
+  filters,
+  onFilterChange,
+  onRefresh,
+}) => {
   const theme = useTheme();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<WalletStatusFilter>("ALL");
-  const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null);
+  const dispatch = useDispatch();
 
-  const handleOpenFilterMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setFilterAnchorEl(event.currentTarget);
+  const reduxSearchTerm = useSelector(selectWalletsSearchTerm);
+  const reduxFilters = useSelector(selectWalletsFilters);
+  const reduxHasActiveFilters = useSelector(selectHasActiveWalletsFilters);
+
+  const currentSearchTerm = searchTerm !== undefined ? searchTerm : reduxSearchTerm;
+  const currentFilters = filters !== undefined ? filters : reduxFilters;
+  const hasActiveFilters =
+    filters !== undefined
+      ? Boolean(
+          filters.user ||
+          filters.asset ||
+          filters.min_balance ||
+          filters.max_balance ||
+          (filters.is_frozen && filters.is_frozen !== "all"),
+        )
+      : reduxHasActiveFilters;
+
+  const handleSearchChange = (term: string) => {
+    if (onSearchChange) {
+      onSearchChange(term);
+    } else {
+      dispatch(setWalletsSearchTerm(term));
+    }
   };
 
-  const handleCloseFilterMenu = () => {
-    setFilterAnchorEl(null);
+  const handleOpenFilterDialog = () => {
+    dispatch(openWalletsFilterDialog());
   };
 
-  const handleSelectStatus = (status: WalletStatusFilter) => {
-    setStatusFilter(status);
-    handleCloseFilterMenu();
+  const handleRemoveFilter = (key: keyof WalletFilterValues) => {
+    const updated = { ...currentFilters };
+    if (key === "user") {
+      delete updated.user;
+      delete updated.userObject;
+    } else {
+      delete updated[key];
+    }
+
+    if (onFilterChange) {
+      onFilterChange(updated);
+    } else {
+      dispatch(setWalletsFilters(updated));
+    }
   };
 
-  const statusLabels: Record<WalletStatusFilter, string> = {
-    ALL: "همه کیف پول‌ها",
-    ACTIVE: "کیف پول‌های فعال",
-    FROZEN: "کیف پول‌های مسدود / فریز شده",
+  const handleResetAllFilters = () => {
+    if (onFilterChange) {
+      onFilterChange({});
+    } else {
+      dispatch(resetWalletsFilters());
+    }
   };
 
   return (
-    <Paper
-      elevation={1}
-      sx={{
-        p: 2,
-        mb: 3,
-        borderRadius: 1,
-        background:
-          theme.palette.mode === "dark"
-            ? alpha(theme.palette.background.paper, 0.9)
-            : `linear-gradient(135deg, #ffffff 0%, ${alpha(theme.palette.primary.main, 0.02)} 100%)`,
-        border: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexWrap: "wrap",
-        gap: 2,
-      }}
-    >
-      <Box sx={{ display: "flex", gap: 1.5, alignItems: "center", flexWrap: "wrap", flexGrow: 1 }}>
-        {/* Search Field */}
-        <TextField
-          size="small"
-          placeholder="جستجوی کاربر یا کد ارز..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon color="primary" fontSize="small" />
-                </InputAdornment>
-              ),
-            },
-          }}
-          sx={{
-            width: { xs: "100%", sm: 320 },
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 1,
-              bgcolor: "background.paper",
-            },
-          }}
-        />
-
-        {/* Filter Icon Button */}
-        <Tooltip title="فیلتر بر اساس وضعیت کیف پول">
-          <IconButton
-            onClick={handleOpenFilterMenu}
-            sx={{
-              bgcolor:
-                statusFilter !== "ALL"
-                  ? alpha(theme.palette.primary.main, 0.15)
-                  : "background.paper",
-              border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-              borderRadius: 1,
-              p: 1,
-              transition: "all 0.2s ease",
-              "&:hover": {
-                bgcolor: alpha(theme.palette.primary.main, 0.2),
+    <>
+      <Paper
+        elevation={1}
+        sx={{
+          p: 2,
+          mb: 3,
+          borderRadius: 1,
+          background:
+            theme.palette.mode === "dark"
+              ? alpha(theme.palette.background.paper, 0.9)
+              : `linear-gradient(135deg, #ffffff 0%, ${alpha(theme.palette.primary.main, 0.02)} 100%)`,
+          border: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 2,
+        }}
+      >
+        <Box
+          sx={{ display: "flex", gap: 1.5, alignItems: "center", flexWrap: "wrap", flexGrow: 1 }}
+        >
+          {/* Search Field */}
+          <TextField
+            size="small"
+            placeholder="جستجوی کاربر یا کد ارز..."
+            value={currentSearchTerm}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon color="primary" fontSize="small" />
+                  </InputAdornment>
+                ),
               },
             }}
-          >
-            <Badge color="primary" variant="dot" invisible={statusFilter === "ALL"}>
-              <FilterIcon color={statusFilter !== "ALL" ? "primary" : "action"} />
-            </Badge>
-          </IconButton>
-        </Tooltip>
-
-        {/* Status Filter Dropdown Menu */}
-        <Menu
-          anchorEl={filterAnchorEl}
-          open={Boolean(filterAnchorEl)}
-          onClose={handleCloseFilterMenu}
-          slotProps={{
-            paper: {
-              elevation: 3,
-              sx: { borderRadius: 1, minWidth: 220, mt: 1, p: 0.5 },
-            },
-          }}
-        >
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ px: 2, py: 1, display: "block", fontWeight: 700 }}
-          >
-            فیلتر بر اساس وضعیت
-          </Typography>
-          <Divider sx={{ mb: 0.5 }} />
-          {(["ALL", "ACTIVE", "FROZEN"] as WalletStatusFilter[]).map((status) => (
-            <MenuItem
-              key={status}
-              selected={statusFilter === status}
-              onClick={() => handleSelectStatus(status)}
-              sx={{ borderRadius: 1, my: 0.2 }}
-            >
-              <ListItemText primary={statusLabels[status]} />
-              {statusFilter === status && <CheckIcon fontSize="small" color="primary" />}
-            </MenuItem>
-          ))}
-        </Menu>
-
-        {/* Active Filter Chip */}
-        {statusFilter !== "ALL" && (
-          <Chip
-            label={`وضعیت: ${statusLabels[statusFilter]}`}
-            color="primary"
-            variant="outlined"
-            size="small"
-            onDelete={() => handleSelectStatus("ALL")}
-            deleteIcon={<CloseIcon fontSize="small" />}
-            sx={{ fontWeight: 600, borderRadius: 1 }}
-          />
-        )}
-      </Box>
-
-      {/* Right Controls */}
-      <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
-        <Tooltip title="بروزرسانی لیست کیف پول‌ها">
-          <IconButton
-            onClick={() => {}}
-            color="primary"
             sx={{
-              borderRadius: 1,
-              bgcolor: alpha(theme.palette.primary.main, 0.08),
-              "&:hover": { bgcolor: alpha(theme.palette.primary.main, 0.18) },
+              width: { xs: "100%", sm: 320 },
+              "& .MuiOutlinedInput-root": {
+                borderRadius: 1,
+                bgcolor: "background.paper",
+              },
             }}
-          >
-            <RefreshIcon />
-          </IconButton>
-        </Tooltip>
-      </Box>
-    </Paper>
+          />
+
+          {/* Filter Dialog Trigger Button */}
+          <Tooltip title="فیلتر پیشرفته کیف پول‌ها">
+            <IconButton
+              onClick={handleOpenFilterDialog}
+              sx={{
+                bgcolor: hasActiveFilters
+                  ? alpha(theme.palette.primary.main, 0.15)
+                  : "background.paper",
+                border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+                borderRadius: 1,
+                p: 1,
+                transition: "all 0.2s ease",
+                "&:hover": {
+                  bgcolor: alpha(theme.palette.primary.main, 0.2),
+                },
+              }}
+            >
+              <Badge color="primary" variant="dot" invisible={!hasActiveFilters}>
+                <FilterIcon color={hasActiveFilters ? "primary" : "action"} />
+              </Badge>
+            </IconButton>
+          </Tooltip>
+
+          {/* Active Filter Chips */}
+          {currentFilters.userObject && (
+            <Chip
+              label={`کاربر: ${currentFilters.userObject.username}`}
+              color="primary"
+              variant="outlined"
+              size="small"
+              onDelete={() => handleRemoveFilter("user")}
+              deleteIcon={<CloseIcon fontSize="small" />}
+              sx={{ fontWeight: 600, borderRadius: 1 }}
+            />
+          )}
+
+          {currentFilters.asset && (
+            <Chip
+              label={`ارز: ${currentFilters.asset}`}
+              color="primary"
+              variant="outlined"
+              size="small"
+              onDelete={() => handleRemoveFilter("asset")}
+              deleteIcon={<CloseIcon fontSize="small" />}
+              sx={{ fontWeight: 600, borderRadius: 1 }}
+            />
+          )}
+
+          {currentFilters.is_frozen && currentFilters.is_frozen !== "all" && (
+            <Chip
+              label={`وضعیت: ${currentFilters.is_frozen === "true" ? "فریز شده" : "فعال"}`}
+              color="primary"
+              variant="outlined"
+              size="small"
+              onDelete={() => handleRemoveFilter("is_frozen")}
+              deleteIcon={<CloseIcon fontSize="small" />}
+              sx={{ fontWeight: 600, borderRadius: 1 }}
+            />
+          )}
+
+          {currentFilters.min_balance && (
+            <Chip
+              label={`حداقل موجودی: ${currentFilters.min_balance}`}
+              color="primary"
+              variant="outlined"
+              size="small"
+              onDelete={() => handleRemoveFilter("min_balance")}
+              deleteIcon={<CloseIcon fontSize="small" />}
+              sx={{ fontWeight: 600, borderRadius: 1 }}
+            />
+          )}
+
+          {currentFilters.max_balance && (
+            <Chip
+              label={`حداکثر موجودی: ${currentFilters.max_balance}`}
+              color="primary"
+              variant="outlined"
+              size="small"
+              onDelete={() => handleRemoveFilter("max_balance")}
+              deleteIcon={<CloseIcon fontSize="small" />}
+              sx={{ fontWeight: 600, borderRadius: 1 }}
+            />
+          )}
+
+          {hasActiveFilters && (
+            <Button
+              size="small"
+              color="secondary"
+              onClick={handleResetAllFilters}
+              sx={{ fontSize: "0.8rem", textTransform: "none" }}
+            >
+              پاکسازی همه فیلترها
+            </Button>
+          )}
+        </Box>
+
+        {/* Right Controls */}
+        <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
+          <Tooltip title="بروزرسانی لیست کیف پول‌ها">
+            <IconButton
+              onClick={onRefresh}
+              color="primary"
+              sx={{
+                borderRadius: 1,
+                bgcolor: alpha(theme.palette.primary.main, 0.08),
+                "&:hover": { bgcolor: alpha(theme.palette.primary.main, 0.18) },
+              }}
+            >
+              <RefreshIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      </Paper>
+
+      {/* Filter Dialog */}
+      <WalletsFilterDialog />
+    </>
   );
 };

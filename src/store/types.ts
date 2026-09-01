@@ -35,4 +35,12 @@ export const OPEN_USER_FORM = `${ACTION_PREFIXES.APP}/openUserForm` as const;
 export const OPEN_EDIT_USER_FORM = `${ACTION_PREFIXES.APP}/openEditUserForm` as const;
 export const CLOSE_USER_FORM = `${ACTION_PREFIXES.APP}/closeUserForm` as const;
 
+// Wallets UI action types
+export const SET_WALLETS_SEARCH_TERM = `${ACTION_PREFIXES.APP}/setWalletsSearchTerm` as const;
+export const SET_WALLETS_FILTERS = `${ACTION_PREFIXES.APP}/setWalletsFilters` as const;
+export const RESET_WALLETS_FILTERS = `${ACTION_PREFIXES.APP}/resetWalletsFilters` as const;
+export const OPEN_WALLETS_FILTER_DIALOG = `${ACTION_PREFIXES.APP}/openWalletsFilterDialog` as const;
+export const CLOSE_WALLETS_FILTER_DIALOG =
+  `${ACTION_PREFIXES.APP}/closeWalletsFilterDialog` as const;
+
 export type { RootState } from "./index";

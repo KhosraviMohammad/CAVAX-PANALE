@@ -5,6 +5,7 @@ export * from "./themeSelectors";
 export * from "./headerSelectors";
 export * from "./authSelectors";
 export * from "./usersUiSelectors";
+export * from "./walletsUiSelectors";
 
 // Memoized selectors for better performance
 export const createMemoizedSelector = <T, R>(

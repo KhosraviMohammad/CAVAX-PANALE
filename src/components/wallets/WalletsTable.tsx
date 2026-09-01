@@ -17,10 +17,21 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 import { AcUnit as FreezeIcon, LockOpen as UnfreezeIcon } from "@mui/icons-material";
 import { ChevronRightIcon, ChevronLeftIcon } from "@/assets/icons";
 import { useGetWalletsQuery, type Wallet } from "@/store/api/walletsApi";
 import { FreezeWalletDialog } from "./FreezeWalletDialog";
+import { type WalletFilterValues } from "./WalletsFilterDialog";
+import {
+  selectWalletsSearchTerm,
+  selectWalletsFilters,
+} from "@/store/selectors/walletsUiSelectors";
+
+interface WalletsTableProps {
+  searchTerm?: string;
+  filters?: WalletFilterValues;
+}
 
 const formatBalance = (val: string | number) => {
   if (val === undefined || val === null || val === "") return "0";
@@ -45,10 +56,17 @@ const formatDate = (dateStr?: string) => {
   }
 };
 
-export const WalletsTable: React.FC = () => {
+export const WalletsTable: React.FC<WalletsTableProps> = ({ searchTerm, filters }) => {
   const theme = useTheme();
   const [page, setPage] = useState(0);
   const rowsPerPage = 20;
+
+  // Read search term & filters from Redux with props fallback
+  const reduxSearchTerm = useSelector(selectWalletsSearchTerm);
+  const reduxFilters = useSelector(selectWalletsFilters);
+
+  const activeSearchTerm = searchTerm !== undefined ? searchTerm : reduxSearchTerm;
+  const activeFilters = filters !== undefined ? filters : reduxFilters;
 
   // Freeze/Unfreeze Dialog State
   const [selectedWallet, setSelectedWallet] = useState<Wallet | null>(null);
@@ -63,6 +81,12 @@ export const WalletsTable: React.FC = () => {
   } = useGetWalletsQuery({
     page: page + 1,
     page_size: rowsPerPage,
+    search: activeSearchTerm,
+    user: activeFilters?.user,
+    asset: activeFilters?.asset,
+    min_balance: activeFilters?.min_balance,
+    max_balance: activeFilters?.max_balance,
+    is_frozen: activeFilters?.is_frozen,
   });
 
   const wallets = walletsResponse?.results || [];
@@ -158,7 +182,7 @@ export const WalletsTable: React.FC = () => {
                       {/* Asset */}
                       <TableCell>
                         <Chip
-                          label={wallet.asset || "IRR"}
+                          label={wallet.asset || "IRT"}
                           color="primary"
                           variant="outlined"
                           size="small"

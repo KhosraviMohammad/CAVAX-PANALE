@@ -34,6 +34,11 @@ export interface GetWalletsParams {
   page?: number;
   page_size?: number;
   search?: string;
+  user?: string;
+  asset?: string;
+  min_balance?: string | number;
+  max_balance?: string | number;
+  is_frozen?: boolean | string;
 }
 
 export interface FreezeWalletInput {
@@ -57,6 +62,21 @@ export const walletsApi = createApi({
         if (params?.page) queryParams.append("page", String(params.page));
         if (params?.page_size) queryParams.append("page_size", String(params.page_size));
         if (params?.search) queryParams.append("search", params.search);
+        if (params?.user) queryParams.append("user", params.user);
+        if (params?.asset) queryParams.append("asset", params.asset);
+        if (params?.min_balance !== undefined && params?.min_balance !== "") {
+          queryParams.append("min_balance", String(params.min_balance));
+        }
+        if (params?.max_balance !== undefined && params?.max_balance !== "") {
+          queryParams.append("max_balance", String(params.max_balance));
+        }
+        if (
+          params?.is_frozen !== undefined &&
+          params?.is_frozen !== "" &&
+          params?.is_frozen !== "all"
+        ) {
+          queryParams.append("is_frozen", String(params.is_frozen));
+        }
 
         const queryString = queryParams.toString();
         return `/ledger/admin/wallets/${queryString ? `?${queryString}` : ""}`;
