@@ -27,6 +27,7 @@ import { toast } from "react-toastify";
 import { useAdminLoginMutation } from "@/store/api/authApi";
 import { setCredentials } from "@/store/actions";
 import { loginFormSchema, type LoginFormData, zodResolver } from "@/schemas/authSchemas";
+import { parseApiError } from "@/utils/apiError";
 
 const LoginPage: React.FC = () => {
   const theme = useTheme();
@@ -39,6 +40,7 @@ const LoginPage: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
@@ -61,12 +63,19 @@ const LoginPage: React.FC = () => {
       toast.success("ورود با موفقیت انجام شد");
       navigate("/", { replace: true });
     } catch (err: unknown) {
-      console.error("Login error:", err);
-      const errorMsg =
-        (err as { data?: { detail?: string; message?: string } })?.data?.detail ||
-        (err as { data?: { detail?: string; message?: string } })?.data?.message ||
-        "نام کاربری یا رمز عبور اشتباه است";
-      toast.error(errorMsg);
+      const knownFields = Object.keys(data);
+      const { fieldErrors, generalError } = parseApiError(err, knownFields);
+
+      Object.entries(fieldErrors).forEach(([field, message]) => {
+        setError(field as keyof LoginFormData, {
+          type: "server",
+          message,
+        });
+      });
+
+      if (generalError) {
+        toast.error(generalError);
+      }
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, CircularProgress, Alert } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import { setHeaderInfo } from "@/store/actions";
 import {
   useGetCategoriesQuery,
@@ -18,6 +19,7 @@ import { SampleTable } from "@/components/sample/SampleTable";
 import { SampleFormDialog } from "@/components/sample/SampleFormDialog";
 import { SampleValueDialog } from "@/components/sample/SampleValueDialog";
 import type { SampleFormData } from "@/schemas/sampleSchemas";
+import { parseApiError } from "@/utils/apiError";
 
 const SamplePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -61,19 +63,28 @@ const SamplePage: React.FC = () => {
   const handleSampleSubmit = async (data: SampleFormData) => {
     try {
       await createSample(data).unwrap();
+      toast.success("نمونه با موفقیت ایجاد شد");
       setOpenSampleDialog(false);
-    } catch (err) {
-      console.error("Failed to create sample:", err);
+    } catch (err: unknown) {
+      const knownFields = Object.keys(data);
+      const { generalError } = parseApiError(err, knownFields, "خطا در ایجاد نمونه");
+      if (generalError) {
+        toast.error(generalError);
+      }
     }
   };
 
   const handleValueSubmit = async (sampleId: number, value: number) => {
     try {
       await updateSampleValue({ id: sampleId, value }).unwrap();
+      toast.success("مقدار جدید نمونه با موفقیت بروزرسانی شد");
       setOpenValueDialog(false);
       setSelectedSample(null);
-    } catch (err) {
-      console.error("Failed to update sample value:", err);
+    } catch (err: unknown) {
+      const { generalError } = parseApiError(err, ["value"], "خطا در ویرایش مقدار نمونه");
+      if (generalError) {
+        toast.error(generalError);
+      }
     }
   };
 

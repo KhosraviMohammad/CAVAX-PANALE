@@ -26,6 +26,7 @@ import {
   useGetUserByUuidQuery,
 } from "@/store/api/usersApi";
 import { createUserSchema, type CreateUserFormData, zodResolver } from "@/schemas/userSchemas";
+import { parseApiError } from "@/utils/apiError";
 
 export const UserFormDialog: React.FC = () => {
   const dispatch = useDispatch();
@@ -111,45 +112,21 @@ export const UserFormDialog: React.FC = () => {
       reset();
       dispatch(closeUserForm());
     } catch (err: unknown) {
-      console.error("Failed to submit user form:", err);
-      const errorData = (err as { data?: Record<string, unknown> })?.data;
+      const knownFormFields = Object.keys(formData);
 
-      if (errorData && typeof errorData === "object") {
-        let hasFieldError = false;
+      const { fieldErrors, generalError } = parseApiError(err, knownFormFields);
 
-        Object.entries(errorData).forEach(([field, messages]) => {
-          let msg = "";
-          if (Array.isArray(messages)) {
-            msg = messages.join(" ");
-          } else if (typeof messages === "object" && messages !== null) {
-            msg = Object.values(messages).join(" ");
-          } else if (typeof messages === "string") {
-            msg = messages;
-          }
-
-          if (msg && field in formData) {
-            hasFieldError = true;
-            setError(field as keyof CreateUserFormData, {
-              type: "server",
-              message: msg,
-            });
-          }
+      // Set field errors on matching form fields
+      Object.entries(fieldErrors).forEach(([field, message]) => {
+        setError(field as keyof CreateUserFormData, {
+          type: "server",
+          message,
         });
+      });
 
-        if (!hasFieldError) {
-          const generalMsg =
-            (errorData.detail as string) ||
-            (errorData.message as string) ||
-            (Array.isArray(errorData.non_field_errors)
-              ? errorData.non_field_errors.join(" ")
-              : "") ||
-            (isEditMode ? "خطا در بروزرسانی کاربر" : "خطا در ایجاد کاربر جدید");
-          toast.error(generalMsg);
-        } else {
-          toast.error("لطفاً خطاهای مشخص‌شده در فرم را اصلاح نمایید");
-        }
-      } else {
-        toast.error("خطا در ارتباط با سرور");
+      // Notify general / non-field error using react-toastify
+      if (generalError) {
+        toast.error(generalError);
       }
     }
   };

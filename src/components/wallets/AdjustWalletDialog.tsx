@@ -20,6 +20,7 @@ import {
   type AdjustWalletFormData,
   zodResolver,
 } from "@/schemas/walletSchemas";
+import { parseApiError } from "@/utils/apiError";
 
 interface AdjustWalletDialogProps {
   open: boolean;
@@ -39,6 +40,7 @@ export const AdjustWalletDialog: React.FC<AdjustWalletDialogProps> = ({
     handleSubmit,
     control,
     reset,
+    setError,
     formState: { errors },
   } = useForm<AdjustWalletFormData>({
     resolver: zodResolver(adjustWalletSchema),
@@ -82,25 +84,23 @@ export const AdjustWalletDialog: React.FC<AdjustWalletDialogProps> = ({
       toast.success("تعدیل موجودی با موفقیت ثبت شد.");
       handleClose();
     } catch (err: unknown) {
-      const errorData = err as {
-        data?: {
-          reason?: string[];
-          amount?: string[];
-          detail?: string;
-          message?: string;
-          non_field_errors?: string[];
-        };
-      };
+      const knownFields = Object.keys(data);
+      const { fieldErrors, generalError } = parseApiError(
+        err,
+        knownFields,
+        "خطا در ثبت تعدیل موجودی. لطفاً مطمئن شوید کیف پول مسدود نیست و موجودی کافی است.",
+      );
 
-      const msg =
-        errorData?.data?.detail ||
-        errorData?.data?.message ||
-        errorData?.data?.reason?.[0] ||
-        errorData?.data?.amount?.[0] ||
-        errorData?.data?.non_field_errors?.[0] ||
-        "خطا در ثبت تعدیل موجودی. لطفاً مطمئن شوید کیف پول مسدود نیست و موجودی کافی است.";
+      Object.entries(fieldErrors).forEach(([field, message]) => {
+        setError(field as keyof AdjustWalletFormData, {
+          type: "server",
+          message,
+        });
+      });
 
-      toast.error(msg);
+      if (generalError) {
+        toast.error(generalError);
+      }
     }
   };
 

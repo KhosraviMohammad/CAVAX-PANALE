@@ -29,6 +29,8 @@ import {
   useApproveDepositRequestMutation,
   type DepositRequest,
 } from "@/store/api/depositRequestsApi";
+import { toast } from "react-toastify";
+import { parseApiError } from "@/utils/apiError";
 import { RejectDepositDialog } from "./RejectDepositDialog";
 
 const formatAmount = (val?: string | number) => {
@@ -115,8 +117,12 @@ export const DepositRequestsTable: React.FC = () => {
     setActionLoadingId(req.uuid);
     try {
       await approveDepositRequest(req.uuid).unwrap();
-    } catch (err) {
-      console.error("Approve deposit failed:", err);
+      toast.success("درخواست واریز با موفقیت تایید شد.");
+    } catch (err: unknown) {
+      const { generalError } = parseApiError(err, undefined, "خطا در تایید درخواست واریز.");
+      if (generalError) {
+        toast.error(generalError);
+      }
     } finally {
       setActionLoadingId(null);
     }

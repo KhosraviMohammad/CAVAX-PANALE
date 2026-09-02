@@ -7,6 +7,7 @@ import {
   useRejectDepositRequestMutation,
   type DepositRequest,
 } from "@/store/api/depositRequestsApi";
+import { parseApiError } from "@/utils/apiError";
 
 interface RejectDepositDialogProps {
   open: boolean;
@@ -42,13 +43,10 @@ export const RejectDepositDialog: React.FC<RejectDepositDialogProps> = ({
       toast.success("درخواست واریز رد شد.");
       handleClose();
     } catch (err: unknown) {
-      const errorData = err as { data?: { reason?: string[]; detail?: string; message?: string } };
-      const msg =
-        errorData?.data?.reason?.[0] ||
-        errorData?.data?.detail ||
-        errorData?.data?.message ||
-        "خطا در رد درخواست واریز.";
-      toast.error(msg);
+      const { generalError } = parseApiError(err, ["reason"], "خطا در رد درخواست واریز.");
+      if (generalError) {
+        toast.error(generalError);
+      }
     }
   };
 

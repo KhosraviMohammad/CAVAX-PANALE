@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextField, Typography, Box, Alert } from "@mui/material";
+import { TextField, Box, Alert } from "@mui/material";
 import { AcUnit as FreezeIcon, LockOpen as UnfreezeIcon } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import { ActionDialog } from "@/components/common/ActionDialog";
@@ -8,6 +8,7 @@ import {
   useUnfreezeWalletMutation,
   type Wallet,
 } from "@/store/api/walletsApi";
+import { parseApiError } from "@/utils/apiError";
 
 interface FreezeWalletDialogProps {
   open: boolean;
@@ -54,13 +55,11 @@ export const FreezeWalletDialog: React.FC<FreezeWalletDialogProps> = ({
       }
       handleClose();
     } catch (err: unknown) {
-      const errorData = err as { data?: { reason?: string[]; detail?: string; message?: string } };
-      const msg =
-        errorData?.data?.reason?.[0] ||
-        errorData?.data?.detail ||
-        errorData?.data?.message ||
-        (isFreeze ? "خطا در فریز کردن کیف پول." : "خطا در رفع فریز کیف پول.");
-      toast.error(msg);
+      const fallbackMsg = isFreeze ? "خطا در فریز کردن کیف پول." : "خطا در رفع فریز کیف پول.";
+      const { generalError } = parseApiError(err, ["reason"], fallbackMsg);
+      if (generalError) {
+        toast.error(generalError);
+      }
     }
   };
 

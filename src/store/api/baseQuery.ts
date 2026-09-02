@@ -25,17 +25,26 @@ export const baseQueryWithLogout: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   const result = await rawBaseQuery(args, api, extraOptions);
 
-  if (result.error && (result.error.status === 401 || result.error.status === 403)) {
-    // Dispatch logout action to reset auth state in Redux
-    api.dispatch(logout());
+  if (result.error) {
+    const rawStatus =
+      (result.error as { originalStatus?: number | string }).originalStatus ?? result.error.status;
+    const statusNumber = typeof rawStatus === "number" ? rawStatus : Number(rawStatus);
 
-    // Redirect to login page if user is not already on an auth / login page
-    if (typeof window !== "undefined") {
-      if (
-        !window.location.pathname.startsWith("/login") &&
-        !window.location.pathname.startsWith("/auth")
-      ) {
-        window.location.href = "/login";
+    (result.error as FetchBaseQueryError & { statusNumber?: number }).statusNumber = statusNumber;
+    (result as { statusNumber?: number }).statusNumber = statusNumber;
+
+    if (statusNumber === 401 || statusNumber === 403) {
+      // Dispatch logout action to reset auth state in Redux
+      api.dispatch(logout());
+
+      // Redirect to login page if user is not already on an auth / login page
+      if (typeof window !== "undefined") {
+        if (
+          !window.location.pathname.startsWith("/login") &&
+          !window.location.pathname.startsWith("/auth")
+        ) {
+          window.location.href = "/login";
+        }
       }
     }
   }
