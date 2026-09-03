@@ -37,6 +37,7 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <AppBar
       position="fixed"
+      elevation={0}
       sx={{
         zIndex: (theme) => theme.zIndex.drawer,
         width: {
@@ -44,19 +45,23 @@ const Header: React.FC<HeaderProps> = ({
         },
         ml: { sm: `${desktopOpen ? drawerWidth : collapsedWidth}px` },
         transition: "width 0.3s ease, margin 0.3s ease",
-        background: `linear-gradient(90deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
-        boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+        backgroundColor: theme.palette.background.paper,
+        color: theme.palette.text.primary,
+        borderBottom: `1px solid ${theme.palette.divider}`,
+        boxShadow:
+          theme.palette.mode === "light"
+            ? "0 1px 3px rgba(0, 0, 0, 0.05)"
+            : "0 1px 3px rgba(0, 0, 0, 0.3)",
         borderRadius: "0",
       }}
     >
       <Toolbar
         sx={{
-          background: `linear-gradient(90deg, ${theme.palette.primary.main}05, rgba(0,0,0,0.15))`,
-          borderBottom: `1px solid ${theme.palette.primary.main}30`,
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary,
         }}
       >
         {/* Left: Drawer toggles */}
-
         <IconButton
           color="inherit"
           aria-label="toggle drawer"
@@ -65,14 +70,18 @@ const Header: React.FC<HeaderProps> = ({
           sx={{
             mr: 2,
             display: { xs: "none", sm: "block" },
-            color: "white",
+            color: theme.palette.text.primary,
             "&:hover": {
-              background: `linear-gradient(90deg, ${theme.palette.primary.main}10, rgba(255,255,255,0.08))`,
+              backgroundColor:
+                theme.palette.mode === "light"
+                  ? "rgba(0, 0, 0, 0.04)"
+                  : "rgba(255, 255, 255, 0.08)",
             },
           }}
         >
           <MenuIcon />
         </IconButton>
+
         {/* Center: Page title */}
         <Box
           sx={{
@@ -87,12 +96,8 @@ const Header: React.FC<HeaderProps> = ({
             noWrap
             component="div"
             sx={{
-              color: "white",
+              color: theme.palette.text.primary,
               fontWeight: 700,
-              background: `linear-gradient(45deg, ${theme.palette.primary.main} 0%, #ffffff 50%, #f0f0f0 100%)`,
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
             }}
           >
             {pageTitle}
@@ -103,11 +108,14 @@ const Header: React.FC<HeaderProps> = ({
               <IconButton
                 size="small"
                 sx={{
-                  color: "rgba(255, 255, 255, 0.85)",
+                  color: theme.palette.text.secondary,
                   p: 0.5,
                   "&:hover": {
-                    color: "#ffffff",
-                    backgroundColor: "rgba(255, 255, 255, 0.15)",
+                    color: theme.palette.primary.main,
+                    backgroundColor:
+                      theme.palette.mode === "light"
+                        ? "rgba(0, 0, 0, 0.04)"
+                        : "rgba(255, 255, 255, 0.08)",
                   },
                 }}
               >

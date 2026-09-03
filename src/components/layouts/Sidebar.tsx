@@ -198,7 +198,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 onClick={() => navigate(item.path)}
                 sx={{
                   minHeight: 48,
-                  borderRadius: 2,
+                  borderRadius: 1,
                   justifyContent: desktopOpen ? "initial" : "center",
                   px: 2,
                   color: "white",

@@ -9,7 +9,7 @@ const collapsedWidth = 64;
 
 const DashboardLayout: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [desktopOpen, setDesktopOpen] = useState(false);
+  const [desktopOpen, setDesktopOpen] = useState(true);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
