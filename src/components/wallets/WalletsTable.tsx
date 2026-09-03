@@ -1,30 +1,13 @@
-import React, { useState } from "react";
-import {
-  Card,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Paper,
-  Box,
-  Typography,
-  Chip,
-  useTheme,
-  IconButton,
-  Tooltip,
-  CircularProgress,
-  Alert,
-} from "@mui/material";
+import React, { useState, useMemo } from "react";
+import { Box, Typography, Chip, IconButton, Tooltip, alpha } from "@mui/material";
 import { useSelector } from "react-redux";
 import {
   AcUnit as FreezeIcon,
   LockOpen as UnfreezeIcon,
   Tune as AdjustIcon,
 } from "@mui/icons-material";
-import { ChevronRightIcon, ChevronLeftIcon } from "@/assets/icons";
 import { useGetWalletsQuery, type Wallet } from "@/store/api/walletsApi";
+import { DataTable, type Column } from "@/components/common/DataTable";
 import { FreezeWalletDialog } from "./FreezeWalletDialog";
 import { AdjustWalletDialog } from "./AdjustWalletDialog";
 import { type WalletFilterValues } from "./WalletsFilterDialog";
@@ -62,7 +45,6 @@ const formatDate = (dateStr?: string) => {
 };
 
 export const WalletsTable: React.FC<WalletsTableProps> = ({ searchTerm, filters }) => {
-  const theme = useTheme();
   const [page, setPage] = useState(0);
   const rowsPerPage = 20;
 
@@ -86,7 +68,6 @@ export const WalletsTable: React.FC<WalletsTableProps> = ({ searchTerm, filters 
     data: walletsResponse,
     isLoading,
     isError,
-    refetch,
   } = useGetWalletsQuery({
     page: page + 1,
     page_size: rowsPerPage,
@@ -122,234 +103,173 @@ export const WalletsTable: React.FC<WalletsTableProps> = ({ searchTerm, filters 
     setAdjustWalletItem(null);
   };
 
-  if (isLoading) {
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", p: 8 }}>
-        <CircularProgress size={48} />
-      </Box>
-    );
-  }
+  const columns = useMemo<Column<Wallet>[]>(
+    () => [
+      {
+        id: "user",
+        label: "کاربر",
+        render: (wallet) => (
+          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+            {wallet.user?.username || "-"}
+          </Typography>
+        ),
+      },
+      {
+        id: "phone_number",
+        label: "تلفن همراه",
+        render: (wallet) => (
+          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+            {wallet.user?.phone_number || "-"}
+          </Typography>
+        ),
+      },
+      {
+        id: "asset",
+        label: "دارایی (Asset)",
+        render: (wallet) => (
+          <Chip
+            label={wallet.asset || "IRT"}
+            color="primary"
+            variant="outlined"
+            size="small"
+            sx={{ fontWeight: 700, borderRadius: "6px" }}
+          />
+        ),
+      },
+      {
+        id: "available_balance",
+        label: "موجودی در دسترس",
+        align: "right",
+        render: (wallet) => (
+          <Typography variant="body2" sx={{ fontWeight: 600, color: "success.main" }}>
+            {formatBalance(wallet.available_balance)}
+          </Typography>
+        ),
+      },
+      {
+        id: "blocked_balance",
+        label: "موجودی مسدود شده",
+        align: "right",
+        render: (wallet) => (
+          <Typography variant="body2" sx={{ fontWeight: 600, color: "warning.main" }}>
+            {formatBalance(wallet.blocked_balance)}
+          </Typography>
+        ),
+      },
+      {
+        id: "total_balance",
+        label: "موجودی کل",
+        align: "right",
+        render: (wallet) => (
+          <Typography variant="body2" sx={{ fontWeight: 700 }}>
+            {formatBalance(wallet.total_balance)}
+          </Typography>
+        ),
+      },
+      {
+        id: "status",
+        label: "وضعیت",
+        align: "center",
+        render: (wallet) => (
+          <Chip
+            label={wallet.is_frozen ? "فریز شده" : "فعال"}
+            color={wallet.is_frozen ? "error" : "success"}
+            size="small"
+            sx={{ fontWeight: 600, borderRadius: "6px" }}
+          />
+        ),
+      },
+      {
+        id: "updated_at",
+        label: "آخرین تغییر",
+        align: "center",
+        render: (wallet) => (
+          <Typography variant="caption" color="text.secondary">
+            {formatDate(wallet.updated_at)}
+          </Typography>
+        ),
+      },
+      {
+        id: "actions",
+        label: "عملیات",
+        align: "center",
+        render: (wallet) => (
+          <Box sx={{ display: "flex", justifyContent: "center", gap: 0.75 }}>
+            <Tooltip title="تعدیل دستی موجودی (افزایش / کاهش)" arrow>
+              <IconButton
+                size="small"
+                onClick={() => handleOpenAdjustDialog(wallet)}
+                sx={{
+                  borderRadius: "8px",
+                  border: (theme) => `1px solid ${theme.palette.divider}`,
+                  color: "primary.main",
+                  "&:hover": {
+                    backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.08),
+                  },
+                }}
+              >
+                <AdjustIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
 
-  if (isError) {
-    return (
-      <Alert
-        severity="error"
-        action={
-          <IconButton color="inherit" size="small" onClick={() => refetch()}>
-            تلاش مجدد
-          </IconButton>
-        }
-        sx={{ borderRadius: 1 }}
-      >
-        خطا در دریافت لیست کیف پول‌ها. لطفاً اتصال سرور و توکن دسترسی را بررسی نمایید.
-      </Alert>
-    );
-  }
+            {wallet.is_frozen ? (
+              <Tooltip title="رفع مسدودسازی (آن‌فریز)" arrow>
+                <IconButton
+                  size="small"
+                  onClick={() => handleOpenDialog(wallet, "unfreeze")}
+                  sx={{
+                    borderRadius: "8px",
+                    border: (theme) => `1px solid ${theme.palette.divider}`,
+                    color: "success.main",
+                    "&:hover": {
+                      backgroundColor: (theme) => alpha(theme.palette.success.main, 0.08),
+                    },
+                  }}
+                >
+                  <UnfreezeIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title="مسدودسازی (فریز)" arrow>
+                <IconButton
+                  size="small"
+                  onClick={() => handleOpenDialog(wallet, "freeze")}
+                  sx={{
+                    borderRadius: "8px",
+                    border: (theme) => `1px solid ${theme.palette.divider}`,
+                    color: "error.main",
+                    "&:hover": {
+                      backgroundColor: (theme) => alpha(theme.palette.error.main, 0.08),
+                    },
+                  }}
+                >
+                  <FreezeIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Box>
+        ),
+      },
+    ],
+    [],
+  );
 
   return (
     <>
-      <Card elevation={2} sx={{ overflow: "hidden" }}>
-        <TableContainer component={Paper} elevation={0}>
-          <Table sx={{ minWidth: 800 }}>
-            <TableHead sx={{ bgcolor: "action.hover" }}>
-              <TableRow>
-                <TableCell sx={{ fontWeight: "bold" }}>کاربر</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>تلفن همراه</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>دارایی (Asset)</TableCell>
-                <TableCell align="right" sx={{ fontWeight: "bold" }}>
-                  موجودی در دسترس
-                </TableCell>
-                <TableCell align="right" sx={{ fontWeight: "bold" }}>
-                  موجودی مسدود شده
-                </TableCell>
-                <TableCell align="right" sx={{ fontWeight: "bold" }}>
-                  موجودی کل
-                </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                  وضعیت
-                </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                  آخرین تغییر
-                </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                  عملیات
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {wallets && wallets.length > 0 ? (
-                wallets.map((wallet: Wallet) => {
-                  const username = wallet.user?.username || "-";
-                  const phoneNumber = wallet.user?.phone_number || "-";
-
-                  return (
-                    <TableRow key={wallet.uuid} hover>
-                      {/* Username */}
-                      <TableCell>
-                        <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-                          {username}
-                        </Typography>
-                      </TableCell>
-
-                      {/* Phone Number */}
-                      <TableCell>
-                        <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
-                          {phoneNumber}
-                        </Typography>
-                      </TableCell>
-
-                      {/* Asset */}
-                      <TableCell>
-                        <Chip
-                          label={wallet.asset || "IRT"}
-                          color="primary"
-                          variant="outlined"
-                          size="small"
-                          sx={{ fontWeight: 700, borderRadius: 1 }}
-                        />
-                      </TableCell>
-
-                      {/* Available Balance */}
-                      <TableCell align="right">
-                        <Typography variant="body2" sx={{ fontWeight: 600, color: "success.main" }}>
-                          {formatBalance(wallet.available_balance)}
-                        </Typography>
-                      </TableCell>
-
-                      {/* Blocked Balance */}
-                      <TableCell align="right">
-                        <Typography variant="body2" sx={{ fontWeight: 600, color: "warning.main" }}>
-                          {formatBalance(wallet.blocked_balance)}
-                        </Typography>
-                      </TableCell>
-
-                      {/* Total Balance */}
-                      <TableCell align="right">
-                        <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                          {formatBalance(wallet.total_balance)}
-                        </Typography>
-                      </TableCell>
-
-                      {/* Status Chip */}
-                      <TableCell align="center">
-                        <Chip
-                          label={wallet.is_frozen ? "فریز شده" : "فعال"}
-                          color={wallet.is_frozen ? "error" : "success"}
-                          size="small"
-                          sx={{ fontWeight: 600, borderRadius: 1 }}
-                        />
-                      </TableCell>
-
-                      {/* Updated At */}
-                      <TableCell align="center">
-                        <Typography variant="caption" color="text.secondary">
-                          {formatDate(wallet.updated_at)}
-                        </Typography>
-                      </TableCell>
-
-                      {/* Actions */}
-                      <TableCell align="center">
-                        <Box sx={{ display: "flex", justifyContent: "center", gap: 0.5 }}>
-                          <Tooltip title="تعدیل دستی موجودی (افزایش / کاهش)">
-                            <IconButton
-                              color="primary"
-                              size="small"
-                              onClick={() => handleOpenAdjustDialog(wallet)}
-                              sx={{ borderRadius: 1 }}
-                            >
-                              <AdjustIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-
-                          {wallet.is_frozen ? (
-                            <Tooltip title="رفع مسدودسازی (آن‌فریز)">
-                              <IconButton
-                                color="success"
-                                size="small"
-                                onClick={() => handleOpenDialog(wallet, "unfreeze")}
-                                sx={{ borderRadius: 1 }}
-                              >
-                                <UnfreezeIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          ) : (
-                            <Tooltip title="مسدودسازی (فریز)">
-                              <IconButton
-                                color="error"
-                                size="small"
-                                onClick={() => handleOpenDialog(wallet, "freeze")}
-                                sx={{ borderRadius: 1 }}
-                              >
-                                <FreezeIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          )}
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={9} align="center" sx={{ py: 4 }}>
-                    <Typography color="text.secondary">هیچ کیف پولی یافت نشد.</Typography>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        {/* Integrated Table Footer / Pagination */}
-        {(() => {
-          const from = totalCount === 0 ? 0 : page * rowsPerPage + 1;
-          const to = Math.min((page + 1) * rowsPerPage, totalCount);
-          const totalPages = Math.max(1, Math.ceil(totalCount / rowsPerPage));
-
-          return (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "wrap",
-                p: 1.5,
-                px: 2.5,
-                borderTop: `1px solid ${theme.palette.divider}`,
-                bgcolor: "background.paper",
-              }}
-            >
-              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-                نمایش <b>{from}</b> تا <b>{to}</b> از <b>{totalCount}</b> کیف پول
-              </Typography>
-
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <IconButton
-                  size="small"
-                  disabled={page === 0}
-                  onClick={() => setPage(page - 1)}
-                  sx={{ borderRadius: 1 }}
-                >
-                  <ChevronRightIcon fontSize="small" />
-                </IconButton>
-
-                <Typography variant="caption" sx={{ px: 0.5, fontWeight: "bold" }}>
-                  {page + 1} / {totalPages}
-                </Typography>
-
-                <IconButton
-                  size="small"
-                  disabled={(page + 1) * rowsPerPage >= totalCount}
-                  onClick={() => setPage(page + 1)}
-                  sx={{ borderRadius: 1 }}
-                >
-                  <ChevronLeftIcon fontSize="small" />
-                </IconButton>
-              </Box>
-            </Box>
-          );
-        })()}
-      </Card>
+      <DataTable
+        columns={columns}
+        data={wallets}
+        keyExtractor={(wallet) => wallet.uuid}
+        isLoading={isLoading}
+        isError={isError}
+        errorMessage="خطا در دریافت لیست کیف پول‌ها. لطفاً اتصال سرور و توکن دسترسی را بررسی نمایید."
+        emptyMessage="هیچ کیف پولی یافت نشد."
+        page={page}
+        rowsPerPage={rowsPerPage}
+        totalCount={totalCount}
+        onPageChange={setPage}
+        itemLabel="کیف پول"
+      />
 
       {/* Freeze / Unfreeze Dialog */}
       <FreezeWalletDialog
@@ -368,3 +288,5 @@ export const WalletsTable: React.FC<WalletsTableProps> = ({ searchTerm, filters 
     </>
   );
 };
+
+export default WalletsTable;
