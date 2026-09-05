@@ -45,19 +45,13 @@ export const DataTable = <T,>({
       elevation={0}
       sx={{
         p: { xs: 1.5, sm: 2 },
-        borderRadius: "16px",
-        border: (theme) => `1px solid ${theme.palette.divider}`,
-        boxShadow: (theme) =>
-          theme.palette.mode === "light"
-            ? "0 4px 20px -2px rgba(0, 0, 0, 0.04)"
-            : "0 4px 20px -2px rgba(0, 0, 0, 0.25)",
       }}
     >
       <TableContainer
         component={Paper}
         elevation={0}
         sx={{
-          borderRadius: "12px",
+          borderRadius: 1,
           border: (theme) => `1px solid ${theme.palette.divider}`,
           backgroundColor: "background.paper",
           overflow: "auto",

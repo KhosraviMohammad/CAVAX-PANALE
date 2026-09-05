@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Paper, Box, Typography, Avatar, useTheme, alpha, Skeleton } from "@mui/material";
+import { Grid } from "@mui/material";
 import {
   Payments as DepositIcon,
   HourglassEmpty as PendingIcon,
@@ -7,9 +7,9 @@ import {
   Cancel as RejectedIcon,
 } from "@mui/icons-material";
 import { useGetDepositRequestsQuery } from "@/store/api/depositRequestsApi";
+import { KpiCard } from "@/components/common/KpiCard";
 
 export const DepositRequestsKpiCards: React.FC = () => {
-  const theme = useTheme();
   const { data: response, isLoading } = useGetDepositRequestsQuery({ page: 1, page_size: 100 });
 
   const requests = response?.results || [];
@@ -26,174 +26,46 @@ export const DepositRequestsKpiCards: React.FC = () => {
     <Grid container spacing={2} sx={{ mb: 3 }}>
       {/* Total Deposit Requests */}
       <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-        <Paper
-          elevation={1}
-          sx={{
-            p: 2,
-            borderRadius: 1,
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
-            background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.08)} 0%, ${alpha(
-              theme.palette.primary.main,
-              0.02,
-            )} 100%)`,
-            border: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
-          }}
-        >
-          <Avatar
-            variant="square"
-            sx={{
-              bgcolor: theme.palette.primary.main,
-              width: 46,
-              height: 46,
-              borderRadius: 1,
-            }}
-          >
-            <DepositIcon fontSize="medium" />
-          </Avatar>
-          <Box>
-            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-              کل درخواست‌های واریز
-            </Typography>
-            {isLoading ? (
-              <Skeleton width={50} height={32} />
-            ) : (
-              <Typography variant="h5" color="primary.main" sx={{ fontWeight: 800 }}>
-                {totalCount}
-              </Typography>
-            )}
-          </Box>
-        </Paper>
+        <KpiCard
+          title="کل درخواست‌های واریز"
+          value={totalCount}
+          color="primary"
+          icon={<DepositIcon fontSize="medium" />}
+          loading={isLoading}
+        />
       </Grid>
 
       {/* Pending */}
       <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-        <Paper
-          elevation={1}
-          sx={{
-            p: 2,
-            borderRadius: 1,
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
-            background: `linear-gradient(135deg, ${alpha(theme.palette.warning.main, 0.08)} 0%, ${alpha(
-              theme.palette.warning.main,
-              0.02,
-            )} 100%)`,
-            border: `1px solid ${alpha(theme.palette.warning.main, 0.15)}`,
-          }}
-        >
-          <Avatar
-            variant="square"
-            sx={{
-              bgcolor: theme.palette.warning.main,
-              width: 46,
-              height: 46,
-              borderRadius: 1,
-            }}
-          >
-            <PendingIcon fontSize="medium" />
-          </Avatar>
-          <Box>
-            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-              در انتظار بررسی
-            </Typography>
-            {isLoading ? (
-              <Skeleton width={50} height={32} />
-            ) : (
-              <Typography variant="h5" color="warning.main" sx={{ fontWeight: 800 }}>
-                {pendingCount}
-              </Typography>
-            )}
-          </Box>
-        </Paper>
+        <KpiCard
+          title="در انتظار بررسی"
+          value={pendingCount}
+          color="warning"
+          icon={<PendingIcon fontSize="medium" />}
+          loading={isLoading}
+        />
       </Grid>
 
       {/* Approved */}
       <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-        <Paper
-          elevation={1}
-          sx={{
-            p: 2,
-            borderRadius: 1,
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
-            background: `linear-gradient(135deg, ${alpha(theme.palette.success.main, 0.08)} 0%, ${alpha(
-              theme.palette.success.main,
-              0.02,
-            )} 100%)`,
-            border: `1px solid ${alpha(theme.palette.success.main, 0.15)}`,
-          }}
-        >
-          <Avatar
-            variant="square"
-            sx={{
-              bgcolor: theme.palette.success.main,
-              width: 46,
-              height: 46,
-              borderRadius: 1,
-            }}
-          >
-            <ApprovedIcon fontSize="medium" />
-          </Avatar>
-          <Box>
-            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-              تایید شده
-            </Typography>
-            {isLoading ? (
-              <Skeleton width={50} height={32} />
-            ) : (
-              <Typography variant="h5" color="success.main" sx={{ fontWeight: 800 }}>
-                {approvedCount}
-              </Typography>
-            )}
-          </Box>
-        </Paper>
+        <KpiCard
+          title="تایید شده"
+          value={approvedCount}
+          color="success"
+          icon={<ApprovedIcon fontSize="medium" />}
+          loading={isLoading}
+        />
       </Grid>
 
       {/* Rejected */}
       <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-        <Paper
-          elevation={1}
-          sx={{
-            p: 2,
-            borderRadius: 1,
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
-            background: `linear-gradient(135deg, ${alpha(theme.palette.error.main, 0.08)} 0%, ${alpha(
-              theme.palette.error.main,
-              0.02,
-            )} 100%)`,
-            border: `1px solid ${alpha(theme.palette.error.main, 0.15)}`,
-          }}
-        >
-          <Avatar
-            variant="square"
-            sx={{
-              bgcolor: theme.palette.error.main,
-              width: 46,
-              height: 46,
-              borderRadius: 1,
-            }}
-          >
-            <RejectedIcon fontSize="medium" />
-          </Avatar>
-          <Box>
-            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-              رد شده
-            </Typography>
-            {isLoading ? (
-              <Skeleton width={50} height={32} />
-            ) : (
-              <Typography variant="h5" color="error.main" sx={{ fontWeight: 800 }}>
-                {rejectedCount}
-              </Typography>
-            )}
-          </Box>
-        </Paper>
+        <KpiCard
+          title="رد شده"
+          value={rejectedCount}
+          color="error"
+          icon={<RejectedIcon fontSize="medium" />}
+          loading={isLoading}
+        />
       </Grid>
     </Grid>
   );

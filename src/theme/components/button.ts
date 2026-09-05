@@ -1,55 +1,45 @@
-import type { Components, Theme } from "@mui/material/styles";
-import { alpha } from "@mui/material/styles";
+import { alpha, darken, type Components, type Theme } from "@mui/material/styles";
 
-export const buttonTheme: Components<Theme> = {
-  MuiButton: {
-    styleOverrides: {
-      root: {
-        borderRadius: 10,
-        textTransform: "none",
-        fontWeight: 700,
-        boxShadow: "none",
-        fontFamily: "Vazirmatn, sans-serif",
-        transition: "all 0.2s ease-in-out",
-        fontSize: "0.875rem",
-        padding: "8px 20px",
-      },
-      contained: ({ theme }: { theme: Theme }) => ({
-        backgroundColor: theme.palette.primary.main,
-        color: theme.palette.primary.contrastText,
-        boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.25)}`,
-        "&:hover": {
-          backgroundColor: theme.palette.primary.dark,
-          boxShadow: `0 4px 14px ${alpha(theme.palette.primary.main, 0.35)}`,
-        },
-      }),
-      outlined: ({ theme }: { theme: Theme }) => ({
-        borderColor:
-          theme.palette.mode === "light" ? "rgba(15, 23, 42, 0.15)" : "rgba(255, 255, 255, 0.2)",
-        color: theme.palette.text.primary,
-        backgroundColor: "transparent",
-        "&:hover": {
-          borderColor: theme.palette.primary.main,
-          color: theme.palette.primary.main,
-          backgroundColor: alpha(theme.palette.primary.main, 0.08),
-        },
-      }),
-      sizeSmall: ({ theme }: { theme: Theme }) => ({
-        padding: "5px 12px",
-        fontSize: "0.75rem",
-        [theme.breakpoints.up("sm")]: {
-          padding: "6px 16px",
-          fontSize: "0.8125rem",
-        },
-      }),
-      sizeLarge: ({ theme }: { theme: Theme }) => ({
-        padding: "10px 24px",
-        fontSize: "0.875rem",
-        [theme.breakpoints.up("sm")]: {
-          padding: "12px 32px",
-          fontSize: "1rem",
-        },
-      }),
-    },
+export const getButtonOverrides = (_mode?: "light" | "dark"): Components<Theme>["MuiButton"] => ({
+  defaultProps: {
+    disableElevation: true,
   },
-};
+  styleOverrides: {
+    root: {
+      textTransform: "none",
+      fontWeight: 600,
+      boxShadow: "none",
+    },
+
+    // ۱. با بک‌گراند (Contained)
+    contained: ({ theme }) => ({
+      background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+      color: theme.palette.primary.contrastText,
+      boxShadow: "none",
+      "&:hover": {
+        background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${darken(theme.palette.primary.dark, 0.2)} 100%)`,
+        boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.25)}`,
+      },
+    }),
+
+    // ۲. با بردر (Outlined)
+    outlined: ({ theme }) => ({
+      borderColor: theme.palette.divider,
+      color: theme.palette.text.primary,
+      "&:hover": {
+        borderColor: theme.palette.primary.main,
+        color: theme.palette.primary.main,
+        backgroundColor: alpha(theme.palette.primary.main, 0.04),
+      },
+    }),
+
+    // ۳. بدون بردر (Text)
+    text: ({ theme }) => ({
+      color: theme.palette.text.secondary,
+      "&:hover": {
+        color: theme.palette.primary.main,
+        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+      },
+    }),
+  },
+});

@@ -12,6 +12,7 @@ import {
   Divider,
   IconButton,
   useTheme,
+  alpha,
 } from "@mui/material";
 import { LogoutIcon, ChevronLeftIcon, PeopleIcon } from "@/assets/icons";
 import {
@@ -185,59 +186,30 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
 
-      <List sx={{ px: 1, pt: 1 }}>
+      <List>
         {menuItems.map((item) => {
           const isActive =
             location.pathname === item.path ||
             (item.path === "/sample" && location.pathname === "/");
 
           return (
-            <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
+            <ListItem key={item.path} disablePadding>
               <ListItemButton
                 selected={isActive}
                 onClick={() => navigate(item.path)}
                 sx={{
-                  minHeight: 48,
-                  borderRadius: 1,
                   justifyContent: desktopOpen ? "initial" : "center",
-                  px: 2,
-                  color: "white",
-                  transition: "all 0.2s ease",
-                  "&:hover": {
-                    background: "rgba(255,255,255,0.15)",
-                  },
-                  "&.Mui-selected": {
-                    background: "rgba(255,255,255,0.25)",
-                    boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-                    "&:hover": {
-                      background: "rgba(255,255,255,0.3)",
-                    },
-                  },
                 }}
               >
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
-                    mr: desktopOpen ? 2 : "auto",
-                    justifyContent: "center",
-                    color: "white",
+                    mr: desktopOpen ? 1.5 : 0,
                   }}
                 >
                   {item.icon}
                 </ListItemIcon>
-                {desktopOpen && (
-                  <ListItemText
-                    primary={item.title}
-                    slotProps={{
-                      primary: {
-                        sx: {
-                          fontSize: "0.95rem",
-                          fontWeight: isActive ? 700 : 500,
-                        },
-                      },
-                    }}
-                  />
-                )}
+                {desktopOpen && <ListItemText primary={item.title} />}
               </ListItemButton>
             </ListItem>
           );
@@ -246,32 +218,30 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       <Divider sx={{ borderColor: "rgba(255,255,255,0.1)", my: 1 }} />
 
-      <List sx={{ px: 1 }}>
+      <List>
         <ListItem disablePadding>
           <ListItemButton
             onClick={handleLogout}
             sx={{
-              minHeight: 48,
-              borderRadius: 2,
               justifyContent: desktopOpen ? "initial" : "center",
               px: 2,
-              color: "white",
+              fontWeight: "bold",
+              color: theme.palette.error.main,
               "&:hover": {
-                background: "rgba(255,255,255,0.15)",
+                backgroundColor: alpha(theme.palette.error.main, 0.18),
+                color: theme.palette.error.dark,
               },
             }}
           >
             <ListItemIcon
               sx={{
                 minWidth: 0,
-                mr: desktopOpen ? 2 : "auto",
-                justifyContent: "center",
-                color: "white",
+                mr: desktopOpen ? 1.5 : 0,
               }}
             >
               <LogoutIcon />
             </ListItemIcon>
-            {desktopOpen && <ListItemText primary="خروج از حساب" sx={{ color: "white" }} />}
+            {desktopOpen && <ListItemText primary="خروج از حساب" />}
           </ListItemButton>
         </ListItem>
       </List>
@@ -291,10 +261,9 @@ const Sidebar: React.FC<SidebarProps> = ({
         variant="permanent"
         sx={{
           "& .MuiDrawer-paper": {
-            boxSizing: "border-box",
             width: desktopOpen ? drawerWidth : collapsedWidth,
             transition: "width 0.3s ease",
-            borderRadius: "0",
+            borderRadius: 0,
           },
         }}
         open

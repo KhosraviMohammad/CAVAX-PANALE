@@ -1,7 +1,5 @@
 import React from "react";
 import {
-  Paper,
-  Box,
   TextField,
   InputAdornment,
   IconButton,
@@ -26,6 +24,7 @@ import {
   resetWalletsFilters,
   openWalletsFilterDialog,
 } from "@/store/actions/walletsUiActions";
+import { HeaderControlsWrapper } from "@/components/common/HeaderControlsWrapper";
 
 interface WalletsHeaderControlsProps {
   searchTerm?: string;
@@ -98,167 +97,148 @@ export const WalletsHeaderControls: React.FC<WalletsHeaderControlsProps> = ({
     }
   };
 
-  return (
+  const leftContent = (
     <>
-      <Paper
-        elevation={1}
+      {/* Search Field */}
+      <TextField
+        size="small"
+        placeholder="جستجوی کاربر یا کد ارز..."
+        value={currentSearchTerm}
+        onChange={(e) => handleSearchChange(e.target.value)}
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon color="primary" fontSize="small" />
+              </InputAdornment>
+            ),
+          },
+        }}
         sx={{
-          p: 2,
-          mb: 3,
+          width: { xs: "100%", sm: 320 },
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 1,
+            bgcolor: "background.paper",
+          },
+        }}
+      />
+
+      {/* Filter Dialog Trigger Button */}
+      <Tooltip title="فیلتر پیشرفته کیف پول‌ها">
+        <IconButton
+          onClick={handleOpenFilterDialog}
+          sx={{
+            bgcolor: hasActiveFilters
+              ? alpha(theme.palette.primary.main, 0.15)
+              : "background.paper",
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+            borderRadius: 1,
+            p: 1,
+            transition: "all 0.2s ease",
+            "&:hover": {
+              bgcolor: alpha(theme.palette.primary.main, 0.2),
+            },
+          }}
+        >
+          <Badge color="primary" variant="dot" invisible={!hasActiveFilters}>
+            <FilterIcon color={hasActiveFilters ? "primary" : "action"} />
+          </Badge>
+        </IconButton>
+      </Tooltip>
+
+      {/* Active Filter Chips */}
+      {currentFilters.userObject && (
+        <Chip
+          label={`کاربر: ${currentFilters.userObject.username}`}
+          color="primary"
+          variant="outlined"
+          size="small"
+          onDelete={() => handleRemoveFilter("user")}
+          deleteIcon={<CloseIcon fontSize="small" />}
+          sx={{ fontWeight: 600, borderRadius: 1 }}
+        />
+      )}
+
+      {currentFilters.asset && (
+        <Chip
+          label={`ارز: ${currentFilters.asset}`}
+          color="primary"
+          variant="outlined"
+          size="small"
+          onDelete={() => handleRemoveFilter("asset")}
+          deleteIcon={<CloseIcon fontSize="small" />}
+          sx={{ fontWeight: 600, borderRadius: 1 }}
+        />
+      )}
+
+      {currentFilters.is_frozen && currentFilters.is_frozen !== "all" && (
+        <Chip
+          label={`وضعیت: ${currentFilters.is_frozen === "true" ? "فریز شده" : "فعال"}`}
+          color="primary"
+          variant="outlined"
+          size="small"
+          onDelete={() => handleRemoveFilter("is_frozen")}
+          deleteIcon={<CloseIcon fontSize="small" />}
+          sx={{ fontWeight: 600, borderRadius: 1 }}
+        />
+      )}
+
+      {currentFilters.min_balance && (
+        <Chip
+          label={`حداقل موجودی: ${currentFilters.min_balance}`}
+          color="primary"
+          variant="outlined"
+          size="small"
+          onDelete={() => handleRemoveFilter("min_balance")}
+          deleteIcon={<CloseIcon fontSize="small" />}
+          sx={{ fontWeight: 600, borderRadius: 1 }}
+        />
+      )}
+
+      {currentFilters.max_balance && (
+        <Chip
+          label={`حداکثر موجودی: ${currentFilters.max_balance}`}
+          color="primary"
+          variant="outlined"
+          size="small"
+          onDelete={() => handleRemoveFilter("max_balance")}
+          deleteIcon={<CloseIcon fontSize="small" />}
+          sx={{ fontWeight: 600, borderRadius: 1 }}
+        />
+      )}
+
+      {hasActiveFilters && (
+        <Button
+          size="small"
+          color="secondary"
+          onClick={handleResetAllFilters}
+          sx={{ fontSize: "0.8rem", textTransform: "none" }}
+        >
+          پاکسازی همه فیلترها
+        </Button>
+      )}
+    </>
+  );
+
+  const rightContent = (
+    <Tooltip title="بروزرسانی لیست کیف پول‌ها">
+      <IconButton
+        onClick={onRefresh}
+        color="primary"
+        sx={{
           borderRadius: 1,
-          background:
-            theme.palette.mode === "dark"
-              ? alpha(theme.palette.background.paper, 0.9)
-              : `linear-gradient(135deg, #ffffff 0%, ${alpha(theme.palette.primary.main, 0.02)} 100%)`,
-          border: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 2,
+          bgcolor: alpha(theme.palette.primary.main, 0.08),
+          "&:hover": { bgcolor: alpha(theme.palette.primary.main, 0.18) },
         }}
       >
-        <Box
-          sx={{ display: "flex", gap: 1.5, alignItems: "center", flexWrap: "wrap", flexGrow: 1 }}
-        >
-          {/* Search Field */}
-          <TextField
-            size="small"
-            placeholder="جستجوی کاربر یا کد ارز..."
-            value={currentSearchTerm}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon color="primary" fontSize="small" />
-                  </InputAdornment>
-                ),
-              },
-            }}
-            sx={{
-              width: { xs: "100%", sm: 320 },
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 1,
-                bgcolor: "background.paper",
-              },
-            }}
-          />
+        <RefreshIcon />
+      </IconButton>
+    </Tooltip>
+  );
 
-          {/* Filter Dialog Trigger Button */}
-          <Tooltip title="فیلتر پیشرفته کیف پول‌ها">
-            <IconButton
-              onClick={handleOpenFilterDialog}
-              sx={{
-                bgcolor: hasActiveFilters
-                  ? alpha(theme.palette.primary.main, 0.15)
-                  : "background.paper",
-                border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-                borderRadius: 1,
-                p: 1,
-                transition: "all 0.2s ease",
-                "&:hover": {
-                  bgcolor: alpha(theme.palette.primary.main, 0.2),
-                },
-              }}
-            >
-              <Badge color="primary" variant="dot" invisible={!hasActiveFilters}>
-                <FilterIcon color={hasActiveFilters ? "primary" : "action"} />
-              </Badge>
-            </IconButton>
-          </Tooltip>
-
-          {/* Active Filter Chips */}
-          {currentFilters.userObject && (
-            <Chip
-              label={`کاربر: ${currentFilters.userObject.username}`}
-              color="primary"
-              variant="outlined"
-              size="small"
-              onDelete={() => handleRemoveFilter("user")}
-              deleteIcon={<CloseIcon fontSize="small" />}
-              sx={{ fontWeight: 600, borderRadius: 1 }}
-            />
-          )}
-
-          {currentFilters.asset && (
-            <Chip
-              label={`ارز: ${currentFilters.asset}`}
-              color="primary"
-              variant="outlined"
-              size="small"
-              onDelete={() => handleRemoveFilter("asset")}
-              deleteIcon={<CloseIcon fontSize="small" />}
-              sx={{ fontWeight: 600, borderRadius: 1 }}
-            />
-          )}
-
-          {currentFilters.is_frozen && currentFilters.is_frozen !== "all" && (
-            <Chip
-              label={`وضعیت: ${currentFilters.is_frozen === "true" ? "فریز شده" : "فعال"}`}
-              color="primary"
-              variant="outlined"
-              size="small"
-              onDelete={() => handleRemoveFilter("is_frozen")}
-              deleteIcon={<CloseIcon fontSize="small" />}
-              sx={{ fontWeight: 600, borderRadius: 1 }}
-            />
-          )}
-
-          {currentFilters.min_balance && (
-            <Chip
-              label={`حداقل موجودی: ${currentFilters.min_balance}`}
-              color="primary"
-              variant="outlined"
-              size="small"
-              onDelete={() => handleRemoveFilter("min_balance")}
-              deleteIcon={<CloseIcon fontSize="small" />}
-              sx={{ fontWeight: 600, borderRadius: 1 }}
-            />
-          )}
-
-          {currentFilters.max_balance && (
-            <Chip
-              label={`حداکثر موجودی: ${currentFilters.max_balance}`}
-              color="primary"
-              variant="outlined"
-              size="small"
-              onDelete={() => handleRemoveFilter("max_balance")}
-              deleteIcon={<CloseIcon fontSize="small" />}
-              sx={{ fontWeight: 600, borderRadius: 1 }}
-            />
-          )}
-
-          {hasActiveFilters && (
-            <Button
-              size="small"
-              color="secondary"
-              onClick={handleResetAllFilters}
-              sx={{ fontSize: "0.8rem", textTransform: "none" }}
-            >
-              پاکسازی همه فیلترها
-            </Button>
-          )}
-        </Box>
-
-        {/* Right Controls */}
-        <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
-          <Tooltip title="بروزرسانی لیست کیف پول‌ها">
-            <IconButton
-              onClick={onRefresh}
-              color="primary"
-              sx={{
-                borderRadius: 1,
-                bgcolor: alpha(theme.palette.primary.main, 0.08),
-                "&:hover": { bgcolor: alpha(theme.palette.primary.main, 0.18) },
-              }}
-            >
-              <RefreshIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </Paper>
-
+  return (
+    <>
+      <HeaderControlsWrapper leftContent={leftContent} rightContent={rightContent} />
       {/* Filter Dialog */}
       <WalletsFilterDialog />
     </>

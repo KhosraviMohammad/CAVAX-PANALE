@@ -57,7 +57,7 @@ const getStatusChipColor = (status?: string): "success" | "warning" | "error" | 
 
 export const TransactionsTable: React.FC = () => {
   const [page, setPage] = useState(0);
-  const rowsPerPage = 20;
+  const rowsPerPage = 5;
 
   const {
     data: txResponse,
